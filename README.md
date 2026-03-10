@@ -8,7 +8,7 @@
 
 <a href="#"><img src="https://img.shields.io/badge/Paper-arXiv-b5212f.svg?logo=arxiv" alt="Paper"></a>
 <a href="https://sheep333c.github.io/DIVE/"><img src="https://img.shields.io/badge/Website-DIVE-f37024.svg" alt="Website"></a>
-<a href="#"><img src="https://img.shields.io/badge/Data&Model-HuggingFace-ffd21e.svg?logo=huggingface" alt="HuggingFace"></a>
+<a href="https://huggingface.co/dive-team"><img src="https://img.shields.io/badge/Data&Model-HuggingFace-ffd21e.svg?logo=huggingface" alt="HuggingFace"></a>
 
 Aili Chen<sup>♠♣</sup>, Chi Zhang<sup>♣</sup>, Junteng Liu<sup>♣</sup>, Jiangjie Chen<sup>♦</sup>, Chengyu Du<sup>♠♣</sup>, Yunji Li<sup>♣</sup>, Ming Zhong<sup>♣</sup>, Qin Wang<sup>♣</sup>, Zhengmao Zhu<sup>♣</sup>, Jiayuan Song<sup>♣</sup>, Ke Ji<sup>♣</sup>, Junxian He<sup>♣</sup>, Pengyu Zhao<sup>♣</sup>, Yanghua Xiao<sup>♠†</sup>
 
@@ -30,7 +30,7 @@ DIVE — an evidence-driven recipe that synthesizes **Di**verse, **V**erifiable,
 
 ## Data & Model
 
-You can download our dataset and model from [🤗 HuggingFace](#).
+You can download our dataset and model from [🤗 HuggingFace](https://huggingface.co/dive-team).
 
 ## Installation
 
