@@ -7,7 +7,7 @@
 <div align="center">
 
 <a href="#"><img src="https://img.shields.io/badge/Paper-arXiv-b5212f.svg?logo=arxiv" alt="Paper"></a>
-<a href="#"><img src="https://img.shields.io/badge/Website-DIVE-f37024.svg" alt="Website"></a>
+<a href="https://sheep333c.github.io/DIVE/"><img src="https://img.shields.io/badge/Website-DIVE-f37024.svg" alt="Website"></a>
 <a href="#"><img src="https://img.shields.io/badge/Data&Model-HuggingFace-ffd21e.svg?logo=huggingface" alt="HuggingFace"></a>
 
 Aili Chen<sup>♠♣</sup>, Chi Zhang<sup>♣</sup>, Junteng Liu<sup>♣</sup>, Jiangjie Chen<sup>♦</sup>, Chengyu Du<sup>♠♣</sup>, Yunji Li<sup>♣</sup>, Ming Zhong<sup>♣</sup>, Qin Wang<sup>♣</sup>, Zhengmao Zhu<sup>♣</sup>, Jiayuan Song<sup>♣</sup>, Ke Ji<sup>♣</sup>, Junxian He<sup>♣</sup>, Pengyu Zhao<sup>♣</sup>, Yanghua Xiao<sup>♠†</sup>
