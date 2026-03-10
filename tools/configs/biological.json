@@ -1,0 +1,2821 @@
+{
+  "ncbi_entrez": [
+    {
+      "id": "biological.ncbi_entrez.ncbi_entrez_search",
+      "name": "ncbi_entrez_search",
+      "domain": "biological",
+      "source": "ncbi",
+      "version": "1.0.0",
+      "description": "Search NCBI databases (PubMed, GenBank, Protein, etc.) using Entrez E-utilities. Returns matching IDs and query statistics with support for pagination and advanced search syntax.",
+      "module": "tools.biological.ncbi_entrez.ncbi_entrez_search:NcbiEntrezSearchTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi",
+        "source_urls": [
+          "https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch",
+          "https://biopython.org/docs/latest/api/Bio.Entrez.html#Bio.Entrez.esearch"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "db",
+          "term"
+        ],
+        "properties": {
+          "db": {
+            "type": "string",
+            "enum": ["pubmed", "protein", "nucleotide", "nuccore", "gene", "genome", "structure", "pmc", "taxonomy", "snp", "geo", "sra", "books", "cancerchromosomes", "cdd", "gap", "domains", "genomeprj", "gensat", "gds", "homologene", "journals", "mesh", "ncbisearch", "nlmcatalog", "omia", "omim", "popset", "probe", "proteinclusters", "pcassay", "pccompound", "pcsubstance", "toolkit", "unigene", "unists"],
+            "description": "NCBI database to search"
+          },
+          "term": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search query string, supports NCBI search syntax with field tags like [author], [title], boolean operators, etc."
+          },
+          "retmax": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000,
+            "default": 20,
+            "description": "Maximum number of IDs to return"
+          },
+          "retstart": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting index for pagination"
+          },
+          "sort": {
+            "type": "string",
+            "enum": ["relevance", "pub_date", "author", "journal"],
+            "description": "Sort order for results"
+          },
+          "rettype": {
+            "type": "string",
+            "enum": ["uilist", "count"],
+            "default": "uilist",
+            "description": "Retrieval type - uilist for standard output, count for count only"
+          },
+          "datetype": {
+            "type": "string",
+            "enum": ["mdat", "pdat", "edat", "crdt", "mhda"],
+            "description": "Date type for filtering - mdat (modification), pdat (publication), edat (Entrez), crdt (create), mhda (MeSH)"
+          },
+          "mindate": {
+            "type": "string",
+            "pattern": "^\\d{4}(/\\d{2})?(/\\d{2})?$",
+            "description": "Minimum date - YYYY, YYYY/MM, or YYYY/MM/DD format"
+          },
+          "maxdate": {
+            "type": "string",
+            "pattern": "^\\d{4}(/\\d{2})?(/\\d{2})?$",
+            "description": "Maximum date - YYYY, YYYY/MM, or YYYY/MM/DD format"
+          }
+
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.ncbi_entrez.ncbi_entrez_fetch",
+      "name": "ncbi_entrez_fetch",
+      "domain": "biological",
+      "source": "ncbi",
+      "version": "1.0.0",
+      "description": "Fetch complete records from NCBI databases using Entrez E-utilities. Supports multiple formats (XML, FASTA, GenBank) and sequence-specific parameters for precise data retrieval.",
+      "module": "tools.biological.ncbi_entrez.ncbi_entrez_fetch:NcbiEntrezFetchTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi",
+        "rate_limit": "3 requests/second (10 with API key)",
+        "data_source": "NCBI Entrez databases",
+        "source_urls": [
+          "https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.EFetch",
+          "https://biopython.org/docs/latest/api/Bio.Entrez.html#Bio.Entrez.efetch"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "db",
+          "id"
+        ],
+        "properties": {
+          "db": {
+            "type": "string",
+            "enum": ["pubmed", "protein", "nucleotide", "nuccore", "gene", "genome", "structure", "pmc", "taxonomy", "snp", "geo", "sra", "books", "cancerchromosomes", "cdd", "gap", "domains", "genomeprj", "gensat", "gds", "homologene", "journals", "mesh", "ncbisearch", "nlmcatalog", "omia", "omim", "popset", "probe", "proteinclusters", "pcassay", "pccompound", "pcsubstance", "toolkit", "unigene", "unists"],
+            "description": "NCBI database to fetch from"
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Record ID(s) - single ID or comma-separated list (max 200 IDs)"
+          },
+          "rettype": {
+            "type": "string",
+            "enum": ["xml", "fasta", "gb", "abstract", "medline", "docsum", "uilist"],
+            "description": "Return type - format of the retrieved data"
+          },
+          "retmode": {
+            "type": "string",
+            "enum": ["xml", "text", "json", "html"],
+            "description": "Return mode - presentation format"
+          },
+          "retstart": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting index for pagination"
+          },
+          "retmax": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "default": 20,
+            "description": "Maximum number of records to return"
+          },
+          "strand": {
+            "type": "integer",
+            "enum": [1, 2],
+            "description": "DNA strand direction - 1 (plus) or 2 (minus)"
+          },
+          "seq_start": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Sequence start position (1-based)"
+          },
+          "seq_stop": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Sequence stop position (1-based)"
+          },
+          "complexity": {
+            "type": "integer",
+            "enum": [0, 1, 2],
+            "description": "Sequence complexity - 0 (whole), 1 (bioseq), 2 (bioseq-set)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.ncbi_entrez.ncbi_entrez_summary",
+      "name": "ncbi_entrez_summary",
+      "domain": "biological",
+      "source": "ncbi",
+      "version": "1.0.0",
+      "description": "Get document summaries from NCBI databases using Entrez E-utilities. Returns structured metadata for records, ideal for quick overview and filtering before full data retrieval.",
+      "module": "tools.biological.ncbi_entrez.ncbi_entrez_summary:NcbiEntrezSummaryTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi",
+        "rate_limit": "3 requests/second (10 with API key)",
+        "data_source": "NCBI Entrez databases",
+        "source_urls": [
+          "https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESummary",
+          "https://biopython.org/docs/latest/api/Bio.Entrez.html#Bio.Entrez.esummary"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "db",
+          "id"
+        ],
+        "properties": {
+          "db": {
+            "type": "string",
+            "enum": ["pubmed", "protein", "nucleotide", "nuccore", "gene", "genome", "structure", "pmc", "taxonomy", "snp", "geo", "sra", "books", "cancerchromosomes", "cdd", "gap", "domains", "genomeprj", "gensat", "gds", "homologene", "journals", "mesh", "ncbisearch", "nlmcatalog", "omia", "omim", "popset", "probe", "proteinclusters", "pcassay", "pccompound", "pcsubstance", "toolkit", "unigene", "unists"],
+            "description": "NCBI database to get summaries from"
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Record ID(s) - single ID or comma-separated list (max 200 IDs)"
+          },
+          "retstart": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting index for pagination"
+          },
+          "retmax": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "default": 20,
+            "description": "Maximum number of records to return"
+          },
+          "version": {
+            "type": "string",
+            "enum": ["1.0", "2.0"],
+            "default": "2.0",
+            "description": "ESummary API version - 2.0 recommended for structured output"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.ncbi_entrez.ncbi_entrez_einfo",
+      "name": "ncbi_entrez_einfo",
+      "domain": "biological",
+      "source": "ncbi",
+      "version": "1.0.0",
+      "description": "Get database information and statistics from NCBI using Entrez E-utilities. Returns database metadata including field lists, index information, record counts, and available databases.",
+      "module": "tools.biological.ncbi_entrez.ncbi_entrez_einfo:NcbiEntrezEinfoTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/einfo.fcgi",
+        "rate_limit": "3 requests/second (10 with API key)",
+        "data_source": "NCBI Entrez databases",
+        "source_urls": [
+          "https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.EInfo",
+          "https://biopython.org/docs/latest/api/Bio.Entrez.html#Bio.Entrez.einfo"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "db": {
+            "type": "string",
+            "enum": ["pubmed", "protein", "nucleotide", "nuccore", "gene", "genome", "structure", "pmc", "taxonomy", "snp", "geo", "sra", "books", "cancerchromosomes", "cdd", "gap", "domains", "genomeprj", "gensat", "gds", "homologene", "journals", "mesh", "ncbisearch", "nlmcatalog", "omia", "omim", "popset", "probe", "proteinclusters", "pcassay", "pccompound", "pcsubstance", "toolkit", "unigene", "unists"],
+            "description": "NCBI database name. If omitted, returns list of all available databases"
+          },
+          "version": {
+            "type": "string",
+            "enum": ["1.0", "2.0"],
+            "default": "2.0",
+            "description": "EInfo API version - 2.0 recommended for structured output"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.ncbi_entrez.ncbi_entrez_elink",
+      "name": "ncbi_entrez_elink",
+      "domain": "biological",
+      "source": "ncbi",
+      "version": "1.0.0",
+      "description": "Find related records and links between NCBI databases using Entrez E-utilities. Discovers associations like related articles, gene-protein links, sequence-literature connections, and cross-database relationships.",
+      "module": "tools.biological.ncbi_entrez.ncbi_entrez_elink:NcbiEntrezElinkTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi",
+        "rate_limit": "3 requests/second (10 with API key)",
+        "data_source": "NCBI Entrez databases",
+        "source_urls": [
+          "https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ELink",
+          "https://biopython.org/docs/latest/api/Bio.Entrez.html#Bio.Entrez.elink"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "dbfrom",
+          "db", 
+          "id"
+        ],
+        "properties": {
+          "dbfrom": {
+            "type": "string",
+            "enum": ["pubmed", "protein", "nucleotide", "nuccore", "gene", "genome", "structure", "pmc", "taxonomy", "snp", "geo", "sra", "books", "cancerchromosomes", "cdd", "gap", "domains", "genomeprj", "gensat", "gds", "homologene", "journals", "mesh", "ncbisearch", "nlmcatalog", "omia", "omim", "popset", "probe", "proteinclusters", "pcassay", "pccompound", "pcsubstance", "toolkit", "unigene", "unists"],
+            "description": "Source NCBI database name"
+          },
+          "db": {
+            "type": "string",
+            "enum": ["pubmed", "protein", "nucleotide", "nuccore", "gene", "genome", "structure", "pmc", "taxonomy", "snp", "geo", "sra", "books", "cancerchromosomes", "cdd", "gap", "domains", "genomeprj", "gensat", "gds", "homologene", "journals", "mesh", "ncbisearch", "nlmcatalog", "omia", "omim", "popset", "probe", "proteinclusters", "pcassay", "pccompound", "pcsubstance", "toolkit", "unigene", "unists"],
+            "description": "Target NCBI database name"
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Source record ID(s) - single ID or comma-separated list"
+          },
+          "linkname": {
+            "type": "string",
+            "description": "Link type name (e.g., 'pubmed_pubmed', 'pubmed_protein'). If omitted, returns all available link types"
+          },
+          "term": {
+            "type": "string",
+            "description": "Filter query to restrict linked records"
+          },
+          "holding": {
+            "type": "string",
+            "description": "Institution code for filtering resources"
+          },
+          "datetype": {
+            "type": "string",
+            "enum": ["mdat", "pdat", "edat"],
+            "description": "Date type for date filtering"
+          },
+          "reldate": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of days back for relative date filtering"
+          },
+          "mindate": {
+            "type": "string",
+            "pattern": "^\\d{4}(/\\d{2}(/\\d{2})?)?$",
+            "description": "Minimum date in YYYY, YYYY/MM, or YYYY/MM/DD format"
+          },
+          "maxdate": {
+            "type": "string", 
+            "pattern": "^\\d{4}(/\\d{2}(/\\d{2})?)?$",
+            "description": "Maximum date in YYYY, YYYY/MM, or YYYY/MM/DD format"
+          },
+          "cmd": {
+            "type": "string",
+            "enum": ["neighbor", "neighbor_score", "acheck", "ncheck", "lcheck", "llinks", "llinkslib", "prlinks"],
+            "default": "neighbor",
+            "description": "ELink command type"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.ncbi_entrez.ncbi_entrez_ecitmatch",
+      "name": "ncbi_entrez_ecitmatch",
+      "domain": "biological",
+      "source": "ncbi_entrez",
+      "version": "1.0.0",
+      "description": "Match literature citations to PMIDs using Entrez E-utilities. Input citation strings in journal|year|volume|page format to retrieve corresponding PubMed IDs.",
+      "module": "tools.biological.ncbi_entrez.ncbi_entrez_ecitmatch:NcbiEntrezEcitmatchTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ecitmatch.cgi",
+        "rate_limit": "3 requests/second (10 with API key)",
+        "data_source": "NCBI PubMed database",
+        "source_urls": [
+          "https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ECitMatch",
+          "https://biopython.org/docs/latest/api/Bio.Entrez.html#Bio.Entrez.ecitmatch"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "bdata"
+        ],
+        "properties": {
+          "bdata": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Citation strings in format: journal_title|year|volume|first_page|author_name|your_key| (one per line for multiple citations)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.ncbi_entrez.ncbi_entrez_espell",
+      "name": "ncbi_entrez_espell",
+      "domain": "biological",
+      "source": "ncbi_entrez",
+      "version": "1.0.0",
+      "description": "Get spelling suggestions for search terms using Entrez E-utilities. Helps correct typos and suggests alternative spellings for better search results.",
+      "module": "tools.biological.ncbi_entrez.ncbi_entrez_espell:NcbiEntrezEspellTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/espell.fcgi",
+        "rate_limit": "3 requests/second (10 with API key)",
+        "data_source": "NCBI Entrez databases",
+        "source_urls": [
+          "https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESpell",
+          "https://biopython.org/docs/latest/api/Bio.Entrez.html#Bio.Entrez.espell"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "term"
+        ],
+        "properties": {
+          "term": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search term to check for spelling suggestions"
+          },
+          "db": {
+            "type": "string",
+            "enum": ["pubmed", "protein", "nucleotide", "nuccore", "gene", "genome", "structure", "pmc", "taxonomy", "snp", "geo", "sra", "books", "cancerchromosomes", "cdd", "gap", "domains", "genomeprj", "gensat", "gds", "homologene", "journals", "mesh", "ncbisearch", "nlmcatalog", "omia", "omim", "popset", "probe", "proteinclusters", "pcassay", "pccompound", "pcsubstance", "toolkit", "unigene", "unists"],
+            "default": "pubmed",
+            "description": "NCBI database to use for spell checking context"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "bio_seq": [
+    {
+      "id": "biological.bio_seq.bio_seq_translate",
+      "name": "bio_seq_translate",
+      "domain": "biological",
+      "source": "bio_seq",
+      "version": "1.0.0",
+      "description": "Translate DNA/RNA sequences to protein sequences using BioPython. Supports multiple genetic code tables, reading frames, and translation options for comprehensive sequence analysis.",
+      "module": "tools.biological.bio_seq.bio_seq_translate:BioSeqTranslateTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Seq.translate",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.translate"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 3,
+            "description": "Input nucleotide sequence (DNA or RNA) to be translated into amino acid sequence. Must contain valid nucleotide characters (A, T/U, C, G) and be at least 3 bases long to form one codon. Supports IUPAC ambiguous nucleotide codes."
+          },
+          "table": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 31,
+            "default": 1,
+            "description": "NCBI genetic code table identifier for translation. Common values: 1 (Standard/Universal), 2 (Vertebrate Mitochondrial), 3 (Yeast Mitochondrial), 4 (Mold/Protozoan/Coelenterate Mitochondrial and Mycoplasma/Spiroplasma), 5 (Invertebrate Mitochondrial), 6 (Ciliate/Dasycladacean/Hexamita Nuclear), 9 (Echinoderm and Flatworm Mitochondrial), 10 (Euplotid Nuclear), 11 (Bacterial/Archaeal/Plant Plastid), 12 (Alternative Yeast Nuclear), 13 (Ascidian Mitochondrial), 14 (Alternative Flatworm Mitochondrial), 15 (Blepharisma Nuclear), 16 (Chlorophycean Mitochondrial), 21 (Trematode Mitochondrial), 22 (Scenedesmus obliquus Mitochondrial), 23 (Thraustochytrium Mitochondrial), 24 (Pterobranchia Mitochondrial), 25 (Candidate Division SR1 and Gracilibacteria), 26 (Pachysolen tannophilus Nuclear). Tables 7, 8, 17-20, and 32 are deprecated or reserved. Default is 1 (Standard genetic code)."
+          },
+          "stop_symbol": {
+            "type": "string",
+            "maxLength": 1,
+            "default": "*",
+            "description": "Character used to represent stop codons in the protein sequence. Common values: '*', 'X'."
+          },
+          "to_stop": {
+            "type": "boolean",
+            "default": false,
+            "description": "If true, stops translation at the first stop codon. If false, continues translating through stop codons using stop_symbol."
+          },
+          "cds": {
+            "type": "boolean",
+            "default": false,
+            "description": "If true, validates the sequence as a complete CDS (starts with start codon, ends with stop codon, length divisible by 3)."
+          },
+          "gap": {
+            "type": "string",
+            "maxLength": 1,
+            "description": "Character used for gap codons containing ambiguous nucleotides (N, -, etc.). Common values: 'X', '-'."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_seq.bio_seq_complement",
+      "name": "bio_seq_complement",
+      "domain": "biological",
+      "source": "bio_seq",
+      "version": "1.0.0",
+      "description": "Generate complement and reverse complement of DNA/RNA sequences. Supports both DNA and RNA sequences with automatic type detection and comprehensive analysis.",
+      "module": "tools.biological.bio_seq.bio_seq_complement:BioSeqComplementTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Seq complement functions",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.complement",
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.reverse_complement"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "DNA or RNA nucleotide sequence for complement operations. Supports standard nucleotides (A, T/U, C, G) and IUPAC ambiguous codes. Example: 'ATCG' for DNA or 'AUCG' for RNA."
+          },
+          "operation": {
+            "type": "string",
+            "enum": ["complement", "reverse_complement", "complement_rna", "reverse_complement_rna"],
+            "default": "reverse_complement",
+            "description": "Complement operation type. 'complement': Base pairing in same direction (ATCG→TAGC). 'reverse_complement': Complement and reverse for opposite strand (ATCG→CGAT, most common). RNA versions use U instead of T."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_seq.bio_seq_transcribe",
+      "name": "bio_seq_transcribe",
+      "domain": "biological",
+      "source": "bio_seq",
+      "version": "1.0.0",
+      "description": "Transcribe DNA to RNA or back-transcribe RNA to DNA using BioPython. Includes automatic sequence type detection and comprehensive transcription analysis.",
+      "module": "tools.biological.bio_seq.bio_seq_transcribe:BioSeqTranscribeTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Seq transcribe functions",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.transcribe",
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.back_transcribe"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "DNA or RNA nucleotide sequence for transcription operations. Supports standard nucleotides (A, T/U, C, G) and IUPAC ambiguous codes. Example: 'ATCG' for DNA or 'AUCG' for RNA."
+          },
+          "operation": {
+            "type": "string",
+            "enum": ["transcribe", "back_transcribe"],
+            "default": "transcribe",
+            "description": "Transcription operation type. 'transcribe': DNA to RNA conversion (T→U, e.g., ATCG→AUCG). 'back_transcribe': RNA to DNA conversion (U→T, e.g., AUCG→ATCG)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_seq.bio_seq_count",
+      "name": "bio_seq_count",
+      "domain": "biological",
+      "source": "bio_seq",
+      "version": "1.0.0",
+      "description": "Count occurrences of subsequences in biological sequences. Useful for motif analysis, GC content calculation, and codon frequency studies.",
+      "module": "tools.biological.bio_seq.bio_seq_count:BioSeqCountTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Seq count functions",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.Seq.count"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "subsequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "DNA, RNA, or protein sequence to search in. Supports standard nucleotides/amino acids and IUPAC codes. Example: 'ATGCGATCGATG' or 'MKLLVVS'."
+          },
+          "subsequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Subsequence to count in the main sequence. Can be nucleotides, amino acids, or specific motifs. Example: 'ATG' (start codon), 'GC' (for GC content), 'AAA' (lysine codon)."
+          },
+          "overlap": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to count overlapping matches. false: Non-overlapping count (e.g., 'AAA' in 'AAAA' = 1). true: Overlapping count (e.g., 'AAA' in 'AAAA' = 2)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_seq.bio_seq_find",
+      "name": "bio_seq_find",
+      "domain": "biological",
+      "source": "bio_seq",
+      "version": "1.0.0",
+      "description": "Find positions of subsequences in biological sequences. Useful for locating restriction sites, start codons, motifs, and sequence features.",
+      "module": "tools.biological.bio_seq.bio_seq_find:BioSeqFindTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Seq find functions",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.Seq.find"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "subsequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "DNA, RNA, or protein sequence to search in. Supports standard nucleotides/amino acids and IUPAC codes. Example: 'ATGCGATCGATG' or 'MKLLVVS'."
+          },
+          "subsequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Subsequence to find in the main sequence. Can be restriction sites, start codons, motifs, etc. Example: 'GAATTC' (EcoRI site), 'ATG' (start codon)."
+          },
+          "find_all": {
+            "type": "boolean",
+            "default": false,
+            "description": "Search mode. false: Find first occurrence only (returns position). true: Find all occurrences (returns array of positions)."
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Start position for search (0-based index). Use to search within specific sequence regions."
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "End position for search (0-based index, exclusive). If not specified, searches to sequence end."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_seq.bio_seq_pattern",
+      "name": "bio_seq_pattern",
+      "domain": "biological",
+      "source": "bio_seq",
+      "version": "1.0.0",
+      "description": "Check sequence pattern matching using startswith/endswith operations. Useful for identifying signal peptides, poly-A tails, promoter regions, and sequence features.",
+      "module": "tools.biological.bio_seq.bio_seq_pattern:BioSeqPatternTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Seq startswith/endswith functions",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.Seq.startswith",
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.Seq.endswith"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "pattern"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "DNA, RNA, or protein sequence to check. Supports standard nucleotides/amino acids and IUPAC codes. Example: 'ATGCGATCGATG' or 'MKLLVVS'."
+          },
+          "pattern": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Pattern to match at sequence start/end. Can be signal sequences, poly-A tails, etc. Example: 'ATG' (start codon), 'AAAA' (poly-A), 'TAA' (stop codon)."
+          },
+          "operation": {
+            "type": "string",
+            "enum": ["startswith", "endswith", "both"],
+            "default": "startswith",
+            "description": "Pattern matching mode. 'startswith': Check sequence beginning. 'endswith': Check sequence end. 'both': Check both start and end."
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Start position for 'startswith' check (0-based index). Use to check patterns within sequence regions."
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "End position for 'endswith' check (0-based index). If not specified, uses sequence end."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_seq.bio_seq_back_transcribe",
+      "name": "bio_seq_back_transcribe",
+      "domain": "biological",
+      "source": "bio_seq",
+      "version": "1.0.0",
+      "description": "Convert RNA sequence back to DNA by replacing uracil (U) with thymine (T). Reverse of transcription process, useful for cDNA analysis and sequence conversion.",
+      "module": "tools.biological.bio_seq.bio_seq_back_transcribe:BioSeqBackTranscribeTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Seq back_transcribe function",
+        "data_source": "RNA sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.back_transcribe"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[AUCG]+$",
+            "description": "RNA sequence containing A, U, C, G nucleotides. Example: 'AUCGAUCG' becomes 'ATCGATCG'"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_seq.bio_seq_complement_rna",
+      "name": "bio_seq_complement_rna",
+      "domain": "biological",
+      "source": "bio_seq",
+      "version": "1.0.0",
+      "description": "Generate complement of RNA sequence using base pairing rules (A↔U, C↔G). Essential for RNA secondary structure analysis and hybridization studies.",
+      "module": "tools.biological.bio_seq.bio_seq_complement_rna:BioSeqComplementRnaTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Seq complement_rna function",
+        "data_source": "RNA sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.complement_rna"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[AUCG]+$",
+            "description": "RNA sequence containing A, U, C, G nucleotides. Example: 'AUCG' becomes 'UAGC'"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_seq.bio_seq_reverse_complement",
+      "name": "bio_seq_reverse_complement",
+      "domain": "biological",
+      "source": "bio_seq",
+      "version": "1.0.0",
+      "description": "Generate reverse complement of DNA sequence (reverse + complement). Essential for primer design, PCR analysis, and understanding double-stranded DNA structure.",
+      "module": "tools.biological.bio_seq.bio_seq_reverse_complement:BioSeqReverseComplementTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Seq reverse_complement function",
+        "data_source": "DNA sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.reverse_complement"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[ATCG]+$",
+            "description": "DNA sequence containing A, T, C, G nucleotides. Example: 'ATCG' becomes 'CGAT'"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_seq.bio_seq_reverse_complement_rna",
+      "name": "bio_seq_reverse_complement_rna",
+      "domain": "biological",
+      "source": "bio_seq",
+      "version": "1.0.0",
+      "description": "Generate reverse complement of RNA sequence (reverse + complement). Useful for RNA secondary structure prediction and antisense RNA analysis.",
+      "module": "tools.biological.bio_seq.bio_seq_reverse_complement_rna:BioSeqReverseComplementRnaTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Seq reverse_complement_rna function",
+        "data_source": "RNA sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Seq.html#Bio.Seq.reverse_complement_rna"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[AUCG]+$",
+            "description": "RNA sequence containing A, U, C, G nucleotides. Example: 'AUCG' becomes 'CGAU'"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "bio_sequtils": [
+    {
+      "id": "biological.bio_sequtils.bio_sequtils_gc_content",
+      "name": "bio_sequtils_gc_content",
+      "domain": "biological",
+      "source": "bio_sequtils",
+      "version": "1.0.0",
+      "description": "Calculate GC content percentage in DNA/RNA sequences. Essential for primer design, genome characterization, and sequence analysis.",
+      "module": "tools.biological.bio_sequtils.bio_sequtils_gc_content:BioSeqUtilsGcContentTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.SeqUtils gc_fraction function",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqUtils.html#Bio.SeqUtils.gc_fraction"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "DNA or RNA sequence for GC content analysis. Supports standard nucleotides (A, T/U, G, C) and IUPAC ambiguous codes. Example: 'ATGCGCGCATGC'."
+          },
+          "ambiguous": {
+            "type": "string",
+            "enum": ["ignore", "weighted", "remove"],
+            "default": "ignore",
+            "description": "How to handle ambiguous nucleotides. 'ignore': Count as non-GC (default). 'weighted': Weight by GC probability (R=0.5, Y=0.5, S=1.0, etc.). 'remove': Exclude from calculation."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_sequtils.bio_sequtils_gc123",
+      "name": "bio_sequtils_gc123",
+      "domain": "biological",
+      "source": "bio_sequtils",
+      "version": "1.0.0",
+      "description": "Calculate GC content by codon position (1st, 2nd, 3rd) in coding sequences. Useful for analyzing codon usage bias and evolutionary patterns.",
+      "module": "tools.biological.bio_sequtils.bio_sequtils_gc123:BioSeqUtilsGc123Tool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.SeqUtils GC123 function",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqUtils.html#Bio.SeqUtils.GC123"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 3,
+            "description": "DNA coding sequence for codon position analysis. Should be a multiple of 3 nucleotides. Example: 'ATGAAACGCTAG' (4 codons)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_sequtils.bio_sequtils_gc_skew",
+      "name": "bio_sequtils_gc_skew",
+      "domain": "biological",
+      "source": "bio_sequtils",
+      "version": "1.0.0",
+      "description": "Calculate GC skew (G-C)/(G+C) across sequence windows. Useful for analyzing replication origins, genome structure, and compositional bias.",
+      "module": "tools.biological.bio_sequtils.bio_sequtils_gc_skew:BioSeqUtilsGcSkewTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.SeqUtils GC_skew function",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqUtils.html#Bio.SeqUtils.GC_skew"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 10,
+            "description": "DNA sequence for GC skew analysis. Longer sequences provide more meaningful results. Example: genome segments or chromosomes."
+          },
+          "window": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 100,
+            "description": "Window size for sliding window analysis. Smaller windows = higher resolution, larger windows = smoother trends. Typical: 100-10000 bp."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_sequtils.bio_sequtils_seq1",
+      "name": "bio_sequtils_seq1",
+      "domain": "biological",
+      "source": "bio_sequtils",
+      "version": "1.0.0",
+      "description": "Convert protein sequence from three-letter to one-letter amino acid code. Essential for protein analysis and database searches.",
+      "module": "tools.biological.bio_sequtils.bio_sequtils_seq1:BioSeqUtilsSeq1Tool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.SeqUtils seq1 function",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqUtils.html#Bio.SeqUtils.seq1"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 3,
+            "description": "Three-letter amino acid sequence. Can use standard names (Ala, Gly, Phe) or mixed case. Example: 'AlaGlyPheLeuSer' or 'Ala-Gly-Phe-Leu-Ser'."
+          },
+          "undef_code": {
+            "type": "string",
+            "default": "X",
+            "maxLength": 1,
+            "description": "Single character code for undefined/unknown amino acids. Default 'X' follows standard conventions."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_sequtils.bio_sequtils_seq3",
+      "name": "bio_sequtils_seq3",
+      "domain": "biological",
+      "source": "bio_sequtils",
+      "version": "1.0.0",
+      "description": "Convert protein sequence from one-letter to three-letter amino acid code. Useful for detailed protein analysis and visualization.",
+      "module": "tools.biological.bio_sequtils.bio_sequtils_seq3:BioSeqUtilsSeq3Tool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.SeqUtils seq3 function",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqUtils.html#Bio.SeqUtils.seq3"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "One-letter amino acid sequence using standard codes (A, C, D, E, F, G, H, I, K, L, M, N, P, Q, R, S, T, V, W, Y). Example: 'AGFLS' or 'MKLLVVS'."
+          },
+          "undef_code": {
+            "type": "string",
+            "default": "Xaa",
+            "description": "Three-letter code for undefined/unknown amino acids. Default 'Xaa' follows standard conventions."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_sequtils.bio_sequtils_six_frame",
+      "name": "bio_sequtils_six_frame",
+      "domain": "biological",
+      "source": "bio_sequtils",
+      "version": "1.0.0",
+      "description": "Perform six-frame translation of DNA sequences (3 forward + 3 reverse frames). Essential for gene finding and ORF analysis.",
+      "module": "tools.biological.bio_sequtils.bio_sequtils_six_frame:BioSeqUtilsSixFrameTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.SeqUtils six_frame_translations function",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqUtils.html#Bio.SeqUtils.six_frame_translations"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 3,
+            "description": "DNA sequence for six-frame translation. Should be long enough to contain meaningful ORFs. Example: 'ATGAAACGCTAG' or genomic sequences."
+          },
+          "genetic_code": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 31,
+            "default": 1,
+            "description": "NCBI genetic code table number. 1=Standard, 2=Vertebrate Mitochondrial, 11=Bacterial/Archaeal. See NCBI genetic codes for complete list."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.bio_sequtils.bio_sequtils_nt_search",
+      "name": "bio_sequtils_nt_search",
+      "domain": "biological",
+      "source": "bio_sequtils",
+      "version": "1.0.0",
+      "description": "Search for DNA subsequences with detailed position information. Returns subsequence and all occurrence positions in the target sequence.",
+      "module": "tools.biological.bio_sequtils.bio_sequtils_nt_search:BioSeqUtilsNtSearchTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.SeqUtils nt_search function",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqUtils.html#Bio.SeqUtils.nt_search"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "subsequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "DNA sequence to search in. Should contain standard nucleotides (A, T, G, C). Example: 'ATGCGATCGATCGATG'."
+          },
+          "subsequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "DNA subsequence to find. Can be restriction sites, motifs, or any DNA pattern. Example: 'GATC' (DpnI site), 'GAATTC' (EcoRI site)."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "pairwise2": [
+    {
+      "id": "biological.pairwise2.pairwise2_global_align",
+      "name": "pairwise2_global_align",
+      "domain": "biological",
+      "source": "pairwise2",
+      "version": "1.0.0",
+      "description": "Perform global pairwise sequence alignment with customizable scoring parameters. Aligns entire sequences end-to-end with configurable match/mismatch scores and gap penalties.",
+      "module": "tools.biological.pairwise2.pairwise2_global_align:Pairwise2GlobalAlignTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.pairwise2 globalms function",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.pairwise2.html#Bio.pairwise2.align.globalms"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence_a",
+          "sequence_b"
+        ],
+        "properties": {
+          "sequence_a": {
+            "type": "string",
+            "minLength": 1,
+            "description": "First sequence to align. Can be DNA, RNA, or protein sequence. Example: 'ATGCGATCG' or 'MKLLVLGLL'."
+          },
+          "sequence_b": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Second sequence to align. Can be DNA, RNA, or protein sequence. Example: 'ATGCGATCG' or 'MKLLVLGLL'."
+          },
+          "match_score": {
+            "type": "number",
+            "default": 2,
+            "description": "Score for matching characters. Higher values favor matches. Example: 2 for DNA, 1 for simple scoring."
+          },
+          "mismatch_score": {
+            "type": "number",
+            "default": -1,
+            "description": "Score for mismatching characters. Negative values penalize mismatches. Example: -1 for moderate penalty."
+          },
+          "gap_open": {
+            "type": "number",
+            "default": -0.5,
+            "description": "Score for opening a gap. Negative values penalize gap opening. Example: -0.5 for moderate penalty."
+          },
+          "gap_extend": {
+            "type": "number",
+            "default": -0.1,
+            "description": "Score for extending a gap. Negative values penalize gap extension. Example: -0.1 for small penalty."
+          },
+          "score_only": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return only the best alignment score, not the actual alignments. Useful for quick scoring comparisons."
+          },
+          "one_alignment_only": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return only one alignment instead of all possible alignments with the best score."
+          },
+          "penalize_end_gaps": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to penalize gaps at the beginning and end of sequences in global alignment."
+          },
+          "gap_char": {
+            "type": "string",
+            "default": "-",
+            "description": "Character to use for gaps in the alignment output. Example: '-' for standard gap character."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.pairwise2.pairwise2_local_align",
+      "name": "pairwise2_local_align",
+      "domain": "biological",
+      "source": "pairwise2",
+      "version": "1.0.0",
+      "description": "Perform local pairwise sequence alignment with customizable scoring parameters. Finds the best matching subsequences within the input sequences.",
+      "module": "tools.biological.pairwise2.pairwise2_local_align:Pairwise2LocalAlignTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.pairwise2 localms function",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.pairwise2.html#Bio.pairwise2.align.localms"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence_a",
+          "sequence_b"
+        ],
+        "properties": {
+          "sequence_a": {
+            "type": "string",
+            "minLength": 1,
+            "description": "First sequence to align. Can be DNA, RNA, or protein sequence. Example: 'ATGCGATCG' or 'MKLLVLGLL'."
+          },
+          "sequence_b": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Second sequence to align. Can be DNA, RNA, or protein sequence. Example: 'ATGCGATCG' or 'MKLLVLGLL'."
+          },
+          "match_score": {
+            "type": "number",
+            "default": 2,
+            "description": "Score for matching characters. Higher values favor matches. Example: 2 for DNA, 1 for simple scoring."
+          },
+          "mismatch_score": {
+            "type": "number",
+            "default": -1,
+            "description": "Score for mismatching characters. Negative values penalize mismatches. Example: -1 for moderate penalty."
+          },
+          "gap_open": {
+            "type": "number",
+            "default": -0.5,
+            "description": "Score for opening a gap. Negative values penalize gap opening. Example: -0.5 for moderate penalty."
+          },
+          "gap_extend": {
+            "type": "number",
+            "default": -0.1,
+            "description": "Score for extending a gap. Negative values penalize gap extension. Example: -0.1 for small penalty."
+          },
+          "score_only": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return only the best alignment score, not the actual alignments. Useful for quick scoring comparisons."
+          },
+          "one_alignment_only": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return only one alignment instead of all possible alignments with the best score."
+          },
+          "penalize_end_gaps": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to penalize gaps at the beginning and end of sequences in local alignment."
+          },
+          "gap_char": {
+            "type": "string",
+            "default": "-",
+            "description": "Character to use for gaps in the alignment output. Example: '-' for standard gap character."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.pairwise2.pairwise2_globalxx",
+      "name": "pairwise2_globalxx",
+      "domain": "biological",
+      "source": "pairwise2",
+      "version": "1.0.0",
+      "description": "Perform simple global pairwise sequence alignment with default parameters. Uses match=1, mismatch=0, no gap penalties for quick alignment.",
+      "module": "tools.biological.pairwise2.pairwise2_globalxx:Pairwise2GlobalXXTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.pairwise2 globalxx function",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.pairwise2.html#Bio.pairwise2.align.globalxx"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence_a",
+          "sequence_b"
+        ],
+        "properties": {
+          "sequence_a": {
+            "type": "string",
+            "minLength": 1,
+            "description": "First sequence to align. Can be DNA, RNA, or protein sequence. Example: 'ATGCGATCG' or 'MKLLVLGLL'."
+          },
+          "sequence_b": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Second sequence to align. Can be DNA, RNA, or protein sequence. Example: 'ATGCGATCG' or 'MKLLVLGLL'."
+          },
+          "score_only": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return only the best alignment score, not the actual alignments. Useful for quick scoring comparisons."
+          },
+          "one_alignment_only": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return only one alignment instead of all possible alignments with the best score."
+          },
+          "penalize_end_gaps": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to penalize gaps at the beginning and end of sequences in global alignment."
+          },
+          "gap_char": {
+            "type": "string",
+            "default": "-",
+            "description": "Character to use for gaps in the alignment output. Example: '-' for standard gap character."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.pairwise2.pairwise2_localxx",
+      "name": "pairwise2_localxx",
+      "domain": "biological",
+      "source": "pairwise2",
+      "version": "1.0.0",
+      "description": "Perform simple local pairwise sequence alignment with default parameters. Uses match=1, mismatch=0, no gap penalties for quick alignment.",
+      "module": "tools.biological.pairwise2.pairwise2_localxx:Pairwise2LocalXXTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.pairwise2 localxx function",
+        "data_source": "Sequence input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.pairwise2.html#Bio.pairwise2.align.localxx"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence_a",
+          "sequence_b"
+        ],
+        "properties": {
+          "sequence_a": {
+            "type": "string",
+            "minLength": 1,
+            "description": "First sequence to align. Can be DNA, RNA, or protein sequence. Example: 'ATGCGATCG' or 'MKLLVLGLL'."
+          },
+          "sequence_b": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Second sequence to align. Can be DNA, RNA, or protein sequence. Example: 'ATGCGATCG' or 'MKLLVLGLL'."
+          },
+          "score_only": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return only the best alignment score, not the actual alignments. Useful for quick scoring comparisons."
+          },
+          "one_alignment_only": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return only one alignment instead of all possible alignments with the best score."
+          },
+          "penalize_end_gaps": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to penalize gaps at the beginning and end of sequences in local alignment."
+          },
+          "gap_char": {
+            "type": "string",
+            "default": "-",
+            "description": "Character to use for gaps in the alignment output. Example: '-' for standard gap character."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "expasy": [
+    {
+      "id": "biological.expasy.expasy_prosite",
+      "name": "expasy_prosite",
+      "domain": "biological",
+      "source": "expasy",
+      "version": "1.0.0",
+      "description": "Retrieve PROSITE protein domain and family information from ExPASy database. Get detailed information about protein patterns, profiles, and functional domains.",
+      "module": "tools.biological.expasy.expasy_prosite:ExPASyPrositeTools",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://prosite.expasy.org/",
+        "source_urls": [
+          "https://prosite.expasy.org/",
+          "https://www.expasy.org/",
+          "https://biopython.org/docs/latest/api/Bio.ExPASy.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "prosite_id"
+        ],
+        "properties": {
+          "prosite_id": {
+            "type": "string",
+            "pattern": "^PS\\d{5}$",
+            "description": "PROSITE identifier (e.g., 'PS00001'). Must start with 'PS' followed by 5 digits."
+          },
+          "format": {
+            "type": "string",
+            "enum": ["html", "raw"],
+            "default": "raw",
+            "description": "Output format: 'raw' for plain text PROSITE format, 'html' for HTML formatted output"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.expasy.expasy_prodoc",
+      "name": "expasy_prodoc",
+      "domain": "biological",
+      "source": "expasy",
+      "version": "1.0.0",
+      "description": "Retrieve PRODOC protein documentation entries from ExPASy database. Get detailed protein family and domain documentation in HTML format.",
+      "module": "tools.biological.expasy.expasy_prodoc:ExPASyProdocTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://prosite.expasy.org/cgi-bin/prosite/get-prodoc-entry",
+        "source_urls": [
+          "https://prosite.expasy.org/",
+          "https://www.expasy.org/",
+          "https://biopython.org/docs/latest/api/Bio.ExPASy.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "prodoc_id"
+        ],
+        "properties": {
+          "prodoc_id": {
+            "type": "string",
+            "pattern": "^PDOC\\d{5}$",
+            "description": "PRODOC identifier (e.g., 'PDOC00001'). Must start with 'PDOC' followed by 5 digits."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.expasy.expasy_prosite_raw",
+      "name": "expasy_prosite_raw",
+      "domain": "biological",
+      "source": "expasy",
+      "version": "1.0.0",
+      "description": "Retrieve raw PROSITE records from ExPASy database. Get protein patterns and profiles in plain text PROSITE format.",
+      "module": "tools.biological.expasy.expasy_prosite_raw:ExPASyPrositeRawTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://prosite.expasy.org/cgi-bin/prosite/get-prosite-raw",
+        "source_urls": [
+          "https://prosite.expasy.org/",
+          "https://www.expasy.org/",
+          "https://biopython.org/docs/latest/api/Bio.ExPASy.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "prosite_id"
+        ],
+        "properties": {
+          "prosite_id": {
+            "type": "string",
+            "pattern": "^PS\\d{5}$",
+            "description": "PROSITE identifier (e.g., 'PS00001'). Must start with 'PS' followed by 5 digits."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "togows": [
+    {
+      "id": "biological.togows.togows_search_count",
+      "name": "togows_search_count", 
+      "domain": "biological",
+      "source": "togows",
+      "version": "1.0.0",
+      "description": "Get search result count from TogoWS databases. Count how many entries match a query in various biological databases.",
+      "module": "tools.biological.togows.togows_search_count:TogoWSSearchCountTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "http://togows.org/",
+        "source_urls": [
+          "http://togows.org/",
+          "https://biopython.org/docs/latest/api/Bio.TogoWS.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "database",
+          "query"
+        ],
+        "properties": {
+          "database": {
+            "type": "string",
+            "enum": ["uniprot", "ncbi-pubmed", "ncbi-nucleotide", "ncbi-protein", "ncbi-taxonomy", "ebi-ena", "ddbj"],
+            "description": "Target database for search. Common options: 'uniprot' (protein sequences), 'ncbi-pubmed' (literature), 'ncbi-nucleotide' (DNA/RNA), 'ncbi-protein' (proteins)."
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search query string. Use database-specific syntax. Examples: 'insulin' (simple), 'organism:human AND insulin' (complex)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.togows.togows_entry",
+      "name": "togows_entry",
+      "domain": "biological", 
+      "source": "togows",
+      "version": "1.0.0",
+      "description": "Retrieve specific database entries from TogoWS. Get detailed records from biological databases using entry IDs.",
+      "module": "tools.biological.togows.togows_entry:TogoWSEntryTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "http://togows.org/",
+        "source_urls": [
+          "http://togows.org/",
+          "https://biopython.org/docs/latest/api/Bio.TogoWS.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "database",
+          "entry_id"
+        ],
+        "properties": {
+          "database": {
+            "type": "string",
+            "enum": ["uniprot", "ncbi-pubmed", "ncbi-nucleotide", "ncbi-protein", "ncbi-taxonomy", "ebi-ena", "ddbj"],
+            "description": "Source database. Examples: 'uniprot' (proteins), 'ncbi-pubmed' (papers), 'ncbi-nucleotide' (sequences)."
+          },
+          "entry_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Database entry identifier. Examples: 'P01308' (UniProt), '12345' (PubMed ID), 'NM_000207' (GenBank)."
+          },
+          "format": {
+            "type": "string",
+            "enum": ["fasta", "xml", "json", "list"],
+            "default": "fasta",
+            "description": "Output format. 'fasta' for sequences, 'xml' for structured data, 'json' for JSON format, 'list' for ID lists."
+          },
+          "field": {
+            "type": "string",
+            "description": "Specific field to retrieve (optional). Database-dependent field names like 'title', 'sequence', 'definition'."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.togows.togows_search",
+      "name": "togows_search",
+      "domain": "biological",
+      "source": "togows", 
+      "version": "1.0.0",
+      "description": "Search biological databases using TogoWS with pagination support. Perform queries across multiple databases with result limiting.",
+      "module": "tools.biological.togows.togows_search:TogoWSSearchTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "http://togows.org/",
+        "source_urls": [
+          "http://togows.org/",
+          "https://biopython.org/docs/latest/api/Bio.TogoWS.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "database",
+          "query"
+        ],
+        "properties": {
+          "database": {
+            "type": "string",
+            "enum": ["uniprot", "ncbi-pubmed", "ncbi-nucleotide", "ncbi-protein", "ncbi-taxonomy", "ebi-ena", "ddbj"],
+            "description": "Target database for search. Examples: 'uniprot' (proteins), 'ncbi-pubmed' (literature), 'ncbi-nucleotide' (DNA/RNA)."
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search query string. Use database-specific syntax. Examples: 'insulin', 'organism:human AND protein'."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Starting position for results (1-based). Used for pagination to skip initial results."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 10,
+            "description": "Maximum number of results to return. Limited to 1000 for performance."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.togows.togows_convert",
+      "name": "togows_convert",
+      "domain": "biological",
+      "source": "togows",
+      "version": "1.0.0", 
+      "description": "Convert between biological data formats using TogoWS. Transform sequences and records between formats like FASTA, GenBank, GFF.",
+      "module": "tools.biological.togows.togows_convert:TogoWSConvertTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "http://togows.org/",
+        "source_urls": [
+          "http://togows.org/",
+          "https://biopython.org/docs/latest/api/Bio.TogoWS.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "data",
+          "input_format", 
+          "output_format"
+        ],
+        "properties": {
+          "data": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Input data to convert. Should be in the specified input format. Example: FASTA sequence, GenBank record."
+          },
+          "input_format": {
+            "type": "string",
+            "enum": ["fasta", "genbank", "ena", "ddbj", "uniprot", "blast", "blasttable", "blastxml", "megablast", "csv", "gff", "gvf", "rdfxml", "ttl"],
+            "description": "Input data format. Common formats: 'fasta' (sequences), 'genbank' (annotated sequences), 'gff' (genomic features)."
+          },
+          "output_format": {
+            "type": "string", 
+            "enum": ["fasta", "genbank", "ena", "gff", "ntriples", "n3", "rdfxml", "ttl"],
+            "description": "Desired output format. Common formats: 'fasta' (sequences), 'gff' (genomic features), 'rdfxml' (RDF XML)."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "motifs": [
+    {
+      "id": "biological.motifs.motifs_create",
+      "name": "motifs_create",
+      "domain": "biological",
+      "source": "motifs",
+      "version": "1.0.0",
+      "description": "Create sequence motifs from a list of sequences. Generate consensus sequences and position weight matrices for pattern analysis.",
+      "module": "tools.biological.motifs.motifs_create:MotifsCreateTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.motifs.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequences"
+        ],
+        "properties": {
+          "sequences": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 2,
+            "description": "List of sequences to create motif from. All sequences should have the same length. Examples: ['ACGT', 'ACGT', 'ACTT']"
+          },
+          "alphabet": {
+            "type": "string",
+            "enum": ["ACGT", "ACGU", "ACDEFGHIKLMNPQRSTVWY"],
+            "default": "ACGT",
+            "description": "Sequence alphabet. 'ACGT' for DNA, 'ACGU' for RNA, 'ACDEFGHIKLMNPQRSTVWY' for proteins."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.motifs.motifs_reverse_complement",
+      "name": "motifs_reverse_complement",
+      "domain": "biological",
+      "source": "motifs",
+      "version": "1.0.0",
+      "description": "Calculate reverse complement of DNA sequences. Convert DNA sequence to its reverse complement strand.",
+      "module": "tools.biological.motifs.motifs_reverse_complement:MotifsReverseComplementTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.motifs.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "DNA sequence for reverse complement calculation. Should contain only DNA nucleotides (A, T, G, C). Example: 'ATCG'"
+          },
+          "inplace": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to modify the sequence in place. If false, returns new sequence object."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.motifs.motifs_reverse_complement_rna",
+      "name": "motifs_reverse_complement_rna",
+      "domain": "biological",
+      "source": "motifs",
+      "version": "1.0.0",
+      "description": "Calculate reverse complement of RNA sequences. Convert RNA sequence to its reverse complement strand.",
+      "module": "tools.biological.motifs.motifs_reverse_complement_rna:MotifsReverseComplementRnaTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.motifs.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "RNA sequence for reverse complement calculation. Should contain only RNA nucleotides (A, U, G, C). Example: 'AUCG'"
+          },
+          "inplace": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to modify the sequence in place. If false, returns new sequence object."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "pdb": [
+    {
+      "id": "biological.pdb.pdb_is_aa",
+      "name": "pdb_is_aa",
+      "domain": "biological",
+      "source": "pdb",
+      "version": "1.0.0",
+      "description": "Check if a residue is an amino acid. Identify standard and non-standard amino acid residues in protein structures.",
+      "module": "tools.biological.pdb.pdb_is_aa:PdbIsAaTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.PDB.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "residue"
+        ],
+        "properties": {
+          "residue": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Residue name or code to check. Examples: 'ALA' (alanine), 'GLY' (glycine), 'PRO' (proline), 'MSE' (selenomethionine)"
+          },
+          "standard": {
+            "type": "boolean",
+            "default": false,
+            "description": "If true, only check for standard 20 amino acids. If false, include non-standard amino acids."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.pdb.pdb_is_nucleic",
+      "name": "pdb_is_nucleic",
+      "domain": "biological",
+      "source": "pdb",
+      "version": "1.0.0",
+      "description": "Check if a residue is a nucleic acid. Identify DNA and RNA nucleotides in nucleic acid structures.",
+      "module": "tools.biological.pdb.pdb_is_nucleic:PdbIsNucleicTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.PDB.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "residue"
+        ],
+        "properties": {
+          "residue": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Residue name or code to check. Examples: 'DA' (deoxyadenosine), 'DT' (deoxythymidine), 'A' (adenosine), 'U' (uridine)"
+          },
+          "standard": {
+            "type": "boolean",
+            "default": false,
+            "description": "If true, only check for standard nucleotides. If false, include modified nucleotides."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.pdb.pdb_calc_angle",
+      "name": "pdb_calc_angle",
+      "domain": "biological",
+      "source": "pdb",
+      "version": "1.0.0",
+      "description": "Calculate angle between three 3D points. Useful for analyzing bond angles and molecular geometry in protein structures.",
+      "module": "tools.biological.pdb.pdb_calc_angle:PdbCalcAngleTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.PDB.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "v1",
+          "v2",
+          "v3"
+        ],
+        "properties": {
+          "v1": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "First point coordinates [x, y, z]. Example: [1.0, 0.0, 0.0]"
+          },
+          "v2": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "Second point coordinates [x, y, z] (vertex of angle). Example: [0.0, 0.0, 0.0]"
+          },
+          "v3": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "Third point coordinates [x, y, z]. Example: [0.0, 1.0, 0.0]"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.pdb.pdb_calc_dihedral",
+      "name": "pdb_calc_dihedral",
+      "domain": "biological",
+      "source": "pdb",
+      "version": "1.0.0",
+      "description": "Calculate dihedral angle between four 3D points. Useful for analyzing torsion angles and conformational analysis in molecular structures.",
+      "module": "tools.biological.pdb.pdb_calc_dihedral:PdbCalcDihedralTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.PDB.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "v1",
+          "v2", 
+          "v3",
+          "v4"
+        ],
+        "properties": {
+          "v1": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "First point coordinates [x, y, z]. Example: [1.0, 0.0, 0.0]"
+          },
+          "v2": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "Second point coordinates [x, y, z]. Example: [0.0, 0.0, 0.0]"
+          },
+          "v3": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "Third point coordinates [x, y, z]. Example: [0.0, 1.0, 0.0]"
+          },
+          "v4": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "Fourth point coordinates [x, y, z]. Example: [0.0, 0.0, 1.0]"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "cluster": [
+    {
+      "id": "biological.cluster.cluster_distancematrix",
+      "name": "cluster_distancematrix", 
+      "domain": "biological",
+      "source": "cluster",
+      "version": "1.0.0",
+      "description": "Calculate pairwise distance matrix between data points. Computes distances using various metrics for clustering or similarity analysis.",
+      "module": "tools.biological.cluster.cluster_distancematrix:ClusterDistancematrixTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Cluster.html",
+          "https://en.wikipedia.org/wiki/Distance_matrix"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "array", 
+              "items": {
+                "type": "number"
+              }
+            },
+            "description": "2D numerical data matrix. Each row represents a data point, each column a feature. Example: [[1,2], [1,4], [4,2], [4,4]]"
+          },
+          "dist": {
+            "type": "string",
+            "default": "e",
+            "enum": ["e", "b", "c", "a", "u", "x", "s", "k"],
+            "description": "Distance measure: 'e'=Euclidean, 'b'=city-block, 'c'=correlation, 'a'=absolute correlation, 'u'=uncentered correlation, 'x'=absolute uncentered, 's'=Spearman rank, 'k'=Kendall tau. Default 'e'."
+          },
+          "transpose": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to transpose the data matrix before calculation. Default false."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.cluster.cluster_pca",
+      "name": "cluster_pca",
+      "domain": "biological", 
+      "source": "cluster",
+      "version": "1.0.0",
+      "description": "Perform Principal Component Analysis (PCA) on numerical data. Reduces dimensionality while preserving variance, useful for data visualization and feature extraction.",
+      "module": "tools.biological.cluster.cluster_pca:ClusterPcaTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Cluster.html",
+          "https://en.wikipedia.org/wiki/Principal_component_analysis"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            "description": "2D numerical data matrix for PCA. Each row represents a data point, each column a feature. Example: [[1,2], [1,4], [4,2], [4,4]]"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.cluster.cluster_treecluster",
+      "name": "cluster_treecluster",
+      "domain": "biological",
+      "source": "cluster", 
+      "version": "1.0.0",
+      "description": "Perform hierarchical clustering analysis. Creates a tree structure showing relationships between data points using agglomerative clustering.",
+      "module": "tools.biological.cluster.cluster_treecluster:ClusterTreeclusterTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Cluster.html", 
+          "https://en.wikipedia.org/wiki/Hierarchical_clustering"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            "description": "2D numerical data matrix for clustering. Each row represents a data point, each column a feature. Example: [[1,2], [1,4], [4,2], [4,4]]"
+          },
+          "method": {
+            "type": "string",
+            "default": "m",
+            "enum": ["m", "s", "c", "a"],
+            "description": "Clustering method: 'm'=complete linkage (maximum), 's'=single linkage (minimum), 'c'=centroid linkage, 'a'=average linkage. Default 'm'."
+          },
+          "dist": {
+            "type": "string",
+            "default": "e", 
+            "enum": ["e", "b", "c", "a", "u", "x", "s", "k"],
+            "description": "Distance measure: 'e'=Euclidean, 'b'=city-block, 'c'=correlation, 'a'=absolute correlation, 'u'=uncentered correlation, 'x'=absolute uncentered, 's'=Spearman rank, 'k'=Kendall tau. Default 'e'."
+          },
+          "transpose": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to transpose the data matrix before clustering. Default false."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "restriction": [
+    {
+      "id": "biological.restriction.restriction_search",
+      "name": "restriction_search",
+      "domain": "biological",
+      "source": "restriction",
+      "version": "1.0.0",
+      "description": "Search for restriction enzyme recognition sites in DNA sequences. Find cutting positions for specific restriction endonucleases from a database of 1088 enzymes.",
+      "module": "tools.biological.restriction.restriction_search:RestrictionSearchTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Restriction enzyme search",
+        "data_source": "Bio.Restriction enzyme database (1088 enzymes)",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Restriction.html",
+          "https://rebase.neb.com/"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "enzyme_name"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[ATCG]+$",
+            "description": "DNA sequence to search in. Must contain only A, T, C, G nucleotides. Example: 'GAATTCATGAATTC'"
+          },
+          "enzyme_name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Restriction enzyme name from Bio.Restriction database. Examples: 'EcoRI', 'BamHI', 'HindIII', 'NotI'"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.restriction.restriction_catalyse",
+      "name": "restriction_catalyse",
+      "domain": "biological",
+      "source": "restriction",
+      "version": "1.0.0",
+      "description": "Cut DNA sequences using restriction enzymes. Perform in-silico restriction digestion to generate fragments for cloning and analysis.",
+      "module": "tools.biological.restriction.restriction_catalyse:RestrictionCatalyseTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Restriction enzyme catalysis",
+        "data_source": "Bio.Restriction enzyme database (1088 enzymes)",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Restriction.html",
+          "https://rebase.neb.com/"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "enzyme_name"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[ATCG]+$",
+            "description": "DNA sequence to cut. Must contain only A, T, C, G nucleotides. Example: 'GAATTCATGAATTC'"
+          },
+          "enzyme_name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Restriction enzyme name from Bio.Restriction database. Examples: 'EcoRI', 'BamHI', 'HindIII', 'NotI'"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.restriction.restriction_enzyme_info",
+      "name": "restriction_enzyme_info",
+      "domain": "biological",
+      "source": "restriction",
+      "version": "1.0.0",
+      "description": "Get detailed information about restriction enzymes including recognition sites, suppliers, buffers, and compatibility data from the enzyme database.",
+      "module": "tools.biological.restriction.restriction_enzyme_info:RestrictionEnzymeInfoTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Restriction enzyme properties",
+        "data_source": "Bio.Restriction enzyme database (1088 enzymes)",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Restriction.html",
+          "https://rebase.neb.com/"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "enzyme_name"
+        ],
+        "properties": {
+          "enzyme_name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Restriction enzyme name from Bio.Restriction database. Examples: 'EcoRI', 'BamHI', 'HindIII', 'NotI', 'XhoI'"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.restriction.restriction_all_enzymes",
+      "name": "restriction_all_enzymes",
+      "domain": "biological",
+      "source": "restriction",
+      "version": "1.0.0",
+      "description": "List all available restriction enzymes from the Bio.Restriction database (1088 total). Search and filter enzyme names for experimental planning.",
+      "module": "tools.biological.restriction.restriction_all_enzymes:RestrictionAllEnzymesTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "BioPython Bio.Restriction AllEnzymes",
+        "data_source": "Bio.Restriction enzyme database (1088 enzymes)",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Restriction.html",
+          "https://rebase.neb.com/"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 1088,
+            "description": "Maximum number of enzymes to return. Default 100, maximum 1088 (total database size)."
+          },
+          "search_pattern": {
+            "type": "string",
+            "description": "Optional search pattern to filter enzyme names. Case-insensitive substring match. Example: 'Eco' finds EcoRI, EcoRV, etc."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "codon_table": [
+    {
+      "id": "biological.codon_table.codon_table_standard",
+      "name": "codon_table_standard",
+      "domain": "biological",
+      "source": "codon_table",
+      "version": "1.0.0",
+      "description": "Get standard genetic code table information including start/stop codons and translation tables. Essential for protein translation and genetic analysis.",
+      "module": "tools.biological.codon_table.codon_table_standard:CodonTableStandardTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "data_source": "Bio.Data.CodonTable standard genetic code",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Data.CodonTable.html",
+          "https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "include_forward_table": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include forward translation table (codon to amino acid mapping). Set false for smaller response."
+          },
+          "include_back_table": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include reverse translation table (amino acid to codons mapping). Useful for codon optimization."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.codon_table.codon_table_by_id",
+      "name": "codon_table_by_id",
+      "domain": "biological",
+      "source": "codon_table",
+      "version": "1.0.0",
+      "description": "Get specific genetic code table by ID (1-27). Access alternative genetic codes for mitochondria, chloroplasts, and various organisms.",
+      "module": "tools.biological.codon_table.codon_table_by_id:CodonTableByIdTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "data_source": "Bio.Data.CodonTable genetic code database (27 tables)",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Data.CodonTable.html",
+          "https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "table_id"
+        ],
+        "properties": {
+          "table_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 27,
+            "description": "Genetic code table ID. Examples: 1=Standard, 2=Vertebrate Mitochondrial, 3=Yeast Mitochondrial, 4=Mold/Protozoan Mitochondrial"
+          },
+          "include_forward_table": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include forward translation table (codon to amino acid mapping)."
+          },
+          "include_back_table": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include reverse translation table (amino acid to codons mapping)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.codon_table.codon_table_list",
+      "name": "codon_table_list",
+      "domain": "biological",
+      "source": "codon_table",
+      "version": "1.0.0",
+      "description": "List all available genetic code tables (27 total) with names and basic information. Compare different genetic codes across organisms.",
+      "module": "tools.biological.codon_table.codon_table_list:CodonTableListTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "data_source": "Bio.Data.CodonTable genetic code database (27 tables)",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Data.CodonTable.html",
+          "https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "include_details": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include detailed information (start/stop codons) for each table. Set false for summary only."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "iupac_data": [
+    {
+      "id": "biological.iupac_data.iupac_data_letters",
+      "name": "iupac_data_letters",
+      "domain": "biological",
+      "source": "iupac_data",
+      "version": "1.0.0",
+      "description": "Get IUPAC standard letter codes for DNA, RNA, and proteins including ambiguous nucleotide codes and amino acid conversion tables.",
+      "module": "tools.biological.iupac_data.iupac_data_letters:IupacDataLettersTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "data_source": "Bio.Data.IUPACData standard biochemical codes",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Data.IUPACData.html",
+          "https://www.bioinformatics.org/sms/iupac.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "sequence_type": {
+            "type": "string",
+            "default": "all",
+            "enum": ["dna", "rna", "protein", "all"],
+            "description": "Type of sequence data to return. 'all' returns data for all sequence types."
+          },
+          "include_ambiguous": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include ambiguous letter codes (e.g., N=any nucleotide, X=any amino acid) and their meanings."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.iupac_data.iupac_data_weights",
+      "name": "iupac_data_weights",
+      "domain": "biological",
+      "source": "iupac_data",
+      "version": "1.0.0",
+      "description": "Get molecular weight data for DNA, RNA, and protein letters including monoisotopic and average weights for mass spectrometry analysis.",
+      "module": "tools.biological.iupac_data.iupac_data_weights:IupacDataWeightsTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "data_source": "Bio.Data.IUPACData molecular weight tables",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.Data.IUPACData.html",
+          "https://www.bioinformatics.org/sms/iupac.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "sequence_type": {
+            "type": "string",
+            "default": "all",
+            "enum": ["dna", "rna", "protein", "all"],
+            "description": "Type of sequence data to return weight information for."
+          },
+          "weight_type": {
+            "type": "string",
+            "default": "both",
+            "enum": ["monoisotopic", "average", "both"],
+            "description": "Type of molecular weight data: 'monoisotopic' for exact masses, 'average' for natural abundance, 'both' for complete data."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "svdsuperimposer": [
+    {
+      "id": "biological.svdsuperimposer.svd_superimpose",
+      "name": "svd_superimpose",
+      "domain": "biological",
+      "source": "svdsuperimposer",
+      "version": "1.0.0",
+      "description": "Perform 3D structure superimposition using SVD algorithm. Calculate optimal rotation and translation to align two sets of 3D coordinates with minimal RMSD.",
+      "module": "tools.biological.svdsuperimposer.svd_superimpose:SvdSuperimposeTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "data_source": "3D coordinate input",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SVDSuperimposer.html",
+          "https://en.wikipedia.org/wiki/Kabsch_algorithm"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "coordinates1",
+          "coordinates2"
+        ],
+        "properties": {
+          "coordinates1": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "minItems": 3,
+            "description": "First set of 3D coordinates (reference structure). Each coordinate is [x, y, z]. Example: [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]"
+          },
+          "coordinates2": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "minItems": 3,
+            "description": "Second set of 3D coordinates (structure to be aligned). Must have same number of points as coordinates1. Example: [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]]"
+          },
+          "include_transformed": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include transformed coordinates in the result. Set true to get the aligned coordinates after transformation."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "seqfeature": [
+    {
+      "id": "biological.seqfeature.seqfeature_location",
+      "name": "seqfeature_location",
+      "domain": "biological",
+      "source": "seqfeature",
+      "version": "1.0.0",
+      "description": "Create sequence feature locations and extract sequence fragments. Define genomic regions, gene boundaries, and extract specific sequence segments.",
+      "module": "tools.biological.seqfeature.seqfeature_location:SeqFeatureLocationTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "data_source": "Sequence input and position coordinates",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqFeature.html",
+          "https://biopython.org/wiki/SeqFeature"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "start",
+          "end"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Target DNA, RNA, or protein sequence for feature extraction. Example: 'ATCGATCGATCGATCG'"
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Start position of the feature (0-based index). Example: 2 means starting from the 3rd nucleotide."
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "End position of the feature (0-based, exclusive). Example: 8 means ending before the 9th nucleotide."
+          },
+          "strand": {
+            "type": "integer",
+            "enum": [1, -1],
+            "description": "Strand direction: 1 for forward/plus strand, -1 for reverse/minus strand. Optional."
+          },
+          "extract": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to extract the sequence fragment. Set false to only get position information."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.seqfeature.seqfeature_compound",
+      "name": "seqfeature_compound",
+      "domain": "biological",
+      "source": "seqfeature",
+      "version": "1.0.0",
+      "description": "Create compound sequence feature locations for multi-part features (e.g., exons, domains) and extract concatenated sequences.",
+      "module": "tools.biological.seqfeature.seqfeature_compound:SeqFeatureCompoundTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "data_source": "Sequence input and multiple position coordinates",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqFeature.html",
+          "https://biopython.org/wiki/SeqFeature"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "locations"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Target DNA, RNA, or protein sequence for feature extraction. Example: 'ATCGATCGATCGATCG'"
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["start", "end"],
+              "properties": {
+                "start": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "strand": {
+                  "type": "integer",
+                  "enum": [1, -1]
+                }
+              }
+            },
+            "minItems": 1,
+            "description": "List of feature locations. Each location has start, end, and optional strand. Example: [{'start': 2, 'end': 6}, {'start': 10, 'end': 14}]"
+          },
+          "extract": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to extract and concatenate sequence fragments. Set false to only get position information."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "protparam": [
+    {
+      "id": "biological.protparam.protparam_analysis",
+      "name": "protparam_analysis",
+      "domain": "biological",
+      "source": "biopython",
+      "version": "1.0.0",
+      "description": "Comprehensive protein sequence analysis including molecular weight, isoelectric point, amino acid composition, aromaticity, instability index, and secondary structure prediction.",
+      "module": "tools.biological.protparam.protparam_analysis:ProtParamAnalysisTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "Local computation",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqUtils.ProtParam.html",
+          "https://web.expasy.org/protparam/"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[ACDEFGHIKLMNPQRSTVWY]+$",
+            "description": "Protein sequence using single-letter amino acid codes. Only standard 20 amino acids are supported."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.protparam.protparam_molecular_weight",
+      "name": "protparam_molecular_weight",
+      "domain": "biological",
+      "source": "biopython",
+      "version": "1.0.0",
+      "description": "Calculate the molecular weight of a protein sequence in Daltons (Da). Uses standard amino acid atomic weights.",
+      "module": "tools.biological.protparam.protparam_molecular_weight:ProtParamMolecularWeightTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "Local computation",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqUtils.ProtParam.html",
+          "https://web.expasy.org/protparam/"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[ACDEFGHIKLMNPQRSTVWY]+$",
+            "description": "Protein sequence using single-letter amino acid codes. Only standard 20 amino acids are supported."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.protparam.protparam_isoelectric_point",
+      "name": "protparam_isoelectric_point",
+      "domain": "biological",
+      "source": "biopython",
+      "version": "1.0.0",
+      "description": "Calculate the isoelectric point (pI) of a protein sequence. The pH at which the protein has no net charge.",
+      "module": "tools.biological.protparam.protparam_isoelectric_point:ProtParamIsoelectricPointTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "Local computation",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqUtils.ProtParam.html",
+          "https://web.expasy.org/protparam/"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[ACDEFGHIKLMNPQRSTVWY]+$",
+            "description": "Protein sequence using single-letter amino acid codes. Only standard 20 amino acids are supported."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "biological.protparam.protparam_aromaticity",
+      "name": "protparam_aromaticity",
+      "domain": "biological",
+      "source": "biopython",
+      "version": "1.0.0",
+      "description": "Calculate the aromaticity of a protein sequence. The relative frequency of aromatic amino acids (Phe, Trp, Tyr).",
+      "module": "tools.biological.protparam.protparam_aromaticity:ProtParamAromaticityTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "Local computation",
+        "source_urls": [
+          "https://biopython.org/docs/latest/api/Bio.SeqUtils.ProtParam.html",
+          "https://web.expasy.org/protparam/"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "sequence"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[ACDEFGHIKLMNPQRSTVWY]+$",
+            "description": "Protein sequence using single-letter amino acid codes. Only standard 20 amino acids are supported."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ]
+}

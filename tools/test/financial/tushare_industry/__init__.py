@@ -1,0 +1,3 @@
+"""
+Tushare Industry tools tests
+"""

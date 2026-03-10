@@ -1,0 +1,1445 @@
+{
+  "summary": {
+    "total_modules": 23,
+    "total_functions": 126,
+    "total_classes": 140,
+    "analysis_date": "2024-12-19"
+  },
+  "modules": {
+    "Entrez": {
+      "functions": [
+        {
+          "name": "ecitmatch",
+          "signature": "(**keywds)",
+          "doc": "Retrieve PMIDs for input citation strings, returned as a handle."
+        },
+        {
+          "name": "efetch",
+          "signature": "(db, **keywords)",
+          "doc": "Fetch Entrez results which are returned as a handle."
+        },
+        {
+          "name": "egquery",
+          "signature": "(**keywds)",
+          "doc": "Provide Entrez database counts for a global search (DEPRECATED)."
+        },
+        {
+          "name": "einfo",
+          "signature": "(**keywds)",
+          "doc": "Return a summary of the Entrez databases as a results handle."
+        },
+        {
+          "name": "elink",
+          "signature": "(**keywds)",
+          "doc": "Check for linked external articles and return a handle."
+        },
+        {
+          "name": "epost",
+          "signature": "(db, **keywds)",
+          "doc": "Post a file of identifiers for future use."
+        },
+        {
+          "name": "esearch",
+          "signature": "(db, term, **keywds)",
+          "doc": "Run an Entrez search and return a handle to the results."
+        },
+        {
+          "name": "espell",
+          "signature": "(**keywds)",
+          "doc": "Retrieve spelling suggestions as a results handle."
+        },
+        {
+          "name": "esummary",
+          "signature": "(**keywds)",
+          "doc": "Retrieve document summaries as a results handle."
+        },
+        {
+          "name": "function_with_previous",
+          "signature": "(func: ~F) -> Bio._utils._FunctionWithPrevious[~F]",
+          "doc": "Decorate a function as having an attribute named 'previous'."
+        },
+        {
+          "name": "parse",
+          "signature": "(source, validate=True, escape=False, ignore_errors=False)",
+          "doc": "Parse an XML file from the NCBI Entrez Utilities into python objects."
+        },
+        {
+          "name": "read",
+          "signature": "(source, validate=True, escape=False, ignore_errors=False)",
+          "doc": "Parse an XML file from the NCBI Entrez Utilities into python objects."
+        },
+        {
+          "name": "urlencode",
+          "signature": "(query, doseq=False, safe='', encoding=None, errors=None, quote_via=<function quote_plus at 0x7fc449f2ab60>)",
+          "doc": "Encode a dict or sequence of two-element tuples into a URL query string."
+        },
+        {
+          "name": "urlopen",
+          "signature": "(url, data=None, timeout=<object object at 0x7fc44a2a4ab0>, *, cafile=None, capath=None, cadefault=False, context=None)",
+          "doc": "Open the URL url, which can be either a string or a Request object."
+        }
+      ],
+      "classes": [
+        {
+          "name": "BiopythonDeprecationWarning",
+          "doc": "Biopython deprecation warning."
+        },
+        {
+          "name": "HTTPError",
+          "doc": "Raised when HTTP error occurs, but also acts like non-error return"
+        },
+        {
+          "name": "Request",
+          "doc": ""
+        },
+        {
+          "name": "URLError",
+          "doc": ""
+        }
+      ],
+      "function_count": 14,
+      "class_count": 4,
+      "total_tools": 18,
+      "category": "NCBI",
+      "priority": "High"
+    },
+    "SeqIO": {
+      "functions": [
+        {
+          "name": "as_handle",
+          "signature": "(handleish, mode='r', **kwargs)",
+          "doc": "Context manager to ensure we are using a handle."
+        },
+        {
+          "name": "convert",
+          "signature": "(in_file, in_format, out_file, out_format, molecule_type=None)",
+          "doc": "Convert between two sequence file formats, return number of records."
+        },
+        {
+          "name": "index",
+          "signature": "(filename, format, alphabet=None, key_function=None)",
+          "doc": "Indexes a sequence file and returns a dictionary like object."
+        },
+        {
+          "name": "index_db",
+          "signature": "(index_filename, filenames=None, format=None, alphabet=None, key_function=None)",
+          "doc": "Index several sequence files and return a dictionary like object."
+        },
+        {
+          "name": "parse",
+          "signature": "(handle, format, alphabet=None)",
+          "doc": "Turn a sequence file into an iterator returning SeqRecords."
+        },
+        {
+          "name": "read",
+          "signature": "(handle, format, alphabet=None)",
+          "doc": "Turn a sequence file into a single SeqRecord."
+        },
+        {
+          "name": "to_dict",
+          "signature": "(sequences, key_function=None)",
+          "doc": "Turn a sequence iterator or list into a dictionary."
+        },
+        {
+          "name": "write",
+          "signature": "(sequences: Union[collections.abc.Iterable[Bio.SeqRecord.SeqRecord], Bio.SeqRecord.SeqRecord], handle: Union[IO[str], os.PathLike, str, bytes], format: str) -> int",
+          "doc": "Write complete set of sequences to a file."
+        }
+      ],
+      "classes": [
+        {
+          "name": "Iterable",
+          "doc": ""
+        },
+        {
+          "name": "SeqRecord",
+          "doc": "A SeqRecord object holds a sequence and information about it."
+        }
+      ],
+      "function_count": 8,
+      "class_count": 2,
+      "total_tools": 10,
+      "category": "General",
+      "priority": "High"
+    },
+    "Blast": {
+      "functions": [
+        {
+          "name": "build_opener",
+          "signature": "(*handlers)",
+          "doc": "Create an opener object from a list of handlers."
+        },
+        {
+          "name": "function_with_previous",
+          "signature": "(func: ~F) -> Bio._utils._FunctionWithPrevious[~F]",
+          "doc": "Decorate a function as having an attribute named 'previous'."
+        },
+        {
+          "name": "install_opener",
+          "signature": "(opener)",
+          "doc": ""
+        },
+        {
+          "name": "parse",
+          "signature": "(source)",
+          "doc": "Parse an XML file containing BLAST output and return a Bio.Blast.Records object."
+        },
+        {
+          "name": "qblast",
+          "signature": "(program, database, sequence, url_base='https://blast.ncbi.nlm.nih.gov/Blast.cgi', auto_format=None, composition_based_statistics=None, db_genetic_code=None, endpoints=None, entrez_query='(none)', expect=10.0, filter=None, gapcosts=None, genetic_code=None, hitlist_size=50, i_thresh=None, layout=None, lcase_mask=None, matrix_name=None, nucl_penalty=None, nucl_reward=None, other_advanced=None, perc_ident=None, phi_pattern=None, query_file=None, query_believe_defline=None, query_from=None, query_to=None, searchsp_eff=None, service=None, threshold=None, ungapped_alignment=None, word_size=None, short_query=None, alignments=500, alignment_view=None, descriptions=500, entrez_links_new_window=None, expect_low=None, expect_high=None, format_entrez_query=None, format_object=None, format_type='XML', ncbi_gi=None, results_file=None, show_overview=None, megablast=None, template_type=None, template_length=None, username='blast', password=None)",
+          "doc": "BLAST search using NCBI's QBLAST server."
+        },
+        {
+          "name": "read",
+          "signature": "(source)",
+          "doc": "Parse an XML file containing BLAST output for a single query and return it."
+        },
+        {
+          "name": "urlencode",
+          "signature": "(query, doseq=False, safe='', encoding=None, errors=None, quote_via=<function quote_plus at 0x7fc449f2ab60>)",
+          "doc": "Encode a dict or sequence of two-element tuples into a URL query string."
+        },
+        {
+          "name": "urlopen",
+          "signature": "(url, data=None, timeout=<object object at 0x7fc44a2a4ab0>, *, cafile=None, capath=None, cadefault=False, context=None)",
+          "doc": "Open the URL url, which can be either a string or a Request object."
+        },
+        {
+          "name": "write",
+          "signature": "(records, destination, fmt='XML')",
+          "doc": "Write BLAST records as an XML file, and return the number of records."
+        }
+      ],
+      "classes": [
+        {
+          "name": "Alignment",
+          "doc": "Represents a sequence alignment."
+        },
+        {
+          "name": "Alignments",
+          "doc": ""
+        },
+        {
+          "name": "BiopythonWarning",
+          "doc": "Biopython warning."
+        },
+        {
+          "name": "CorruptedXMLError",
+          "doc": "Corrupted XML."
+        },
+        {
+          "name": "HSP",
+          "doc": "Stores an alignment of one query sequence against a target sequence."
+        },
+        {
+          "name": "HTTPBasicAuthHandler",
+          "doc": ""
+        },
+        {
+          "name": "HTTPPasswordMgrWithDefaultRealm",
+          "doc": ""
+        },
+        {
+          "name": "Hit",
+          "doc": "Stores a single BLAST hit of one single query against one target."
+        },
+        {
+          "name": "NotXMLError",
+          "doc": "Failed to parse file as XML."
+        },
+        {
+          "name": "Record",
+          "doc": "Stores the BLAST results for a single query."
+        },
+        {
+          "name": "Records",
+          "doc": "Stores the BLAST results of a single BLAST run."
+        },
+        {
+          "name": "Request",
+          "doc": ""
+        },
+        {
+          "name": "StreamModeError",
+          "doc": "Incorrect stream mode (text vs binary)."
+        },
+        {
+          "name": "UserList",
+          "doc": "A more or less complete user-defined wrapper around list objects."
+        }
+      ],
+      "function_count": 9,
+      "class_count": 14,
+      "total_tools": 23,
+      "category": "NCBI",
+      "priority": "High"
+    },
+    "Seq": {
+      "functions": [
+        {
+          "name": "abstractmethod",
+          "signature": "(funcobj)",
+          "doc": "A decorator indicating abstract methods."
+        },
+        {
+          "name": "back_transcribe",
+          "signature": "(rna)",
+          "doc": "Return the RNA sequence back-transcribed into DNA."
+        },
+        {
+          "name": "complement",
+          "signature": "(sequence, inplace=False)",
+          "doc": "Return the complement as a DNA sequence."
+        },
+        {
+          "name": "complement_rna",
+          "signature": "(sequence, inplace=False)",
+          "doc": "Return the complement as an RNA sequence."
+        },
+        {
+          "name": "overload",
+          "signature": "(func)",
+          "doc": "Decorator for overloaded functions/methods."
+        },
+        {
+          "name": "reverse_complement",
+          "signature": "(sequence, inplace=False)",
+          "doc": "Return the reverse complement as a DNA sequence."
+        },
+        {
+          "name": "reverse_complement_rna",
+          "signature": "(sequence, inplace=False)",
+          "doc": "Return the reverse complement as an RNA sequence."
+        },
+        {
+          "name": "transcribe",
+          "signature": "(dna)",
+          "doc": "Transcribe a DNA sequence into RNA."
+        },
+        {
+          "name": "translate",
+          "signature": "(sequence, table='Standard', stop_symbol='*', to_stop=False, cds=False, gap=None)",
+          "doc": "Translate a nucleotide sequence into amino acids."
+        }
+      ],
+      "classes": [
+        {
+          "name": "ABC",
+          "doc": "Helper class that provides a standard way to create an ABC using"
+        },
+        {
+          "name": "BiopythonWarning",
+          "doc": "Biopython warning."
+        },
+        {
+          "name": "MutableSeq",
+          "doc": "An editable sequence object."
+        },
+        {
+          "name": "Seq",
+          "doc": "Read-only sequence object (essentially a string with biological methods)."
+        },
+        {
+          "name": "SequenceDataAbstractBaseClass",
+          "doc": "Abstract base class for sequence content providers."
+        },
+        {
+          "name": "UndefinedSequenceError",
+          "doc": "Sequence contents is undefined."
+        }
+      ],
+      "function_count": 9,
+      "class_count": 6,
+      "total_tools": 15,
+      "category": "General",
+      "priority": "High"
+    },
+    "AlignIO": {
+      "functions": [
+        {
+          "name": "as_handle",
+          "signature": "(handleish, mode='r', **kwargs)",
+          "doc": "Context manager to ensure we are using a handle."
+        },
+        {
+          "name": "convert",
+          "signature": "(in_file, in_format, out_file, out_format, molecule_type=None)",
+          "doc": "Convert between two alignment files, returns number of alignments."
+        },
+        {
+          "name": "parse",
+          "signature": "(handle, format, seq_count=None)",
+          "doc": "Iterate over an alignment file as MultipleSeqAlignment objects."
+        },
+        {
+          "name": "read",
+          "signature": "(handle, format, seq_count=None)",
+          "doc": "Turn an alignment file into a single MultipleSeqAlignment object."
+        },
+        {
+          "name": "write",
+          "signature": "(alignments, handle, format)",
+          "doc": "Write complete set of alignments to a file."
+        }
+      ],
+      "classes": [
+        {
+          "name": "MultipleSeqAlignment",
+          "doc": "Represents a classical multiple sequence alignment (MSA)."
+        }
+      ],
+      "function_count": 5,
+      "class_count": 1,
+      "total_tools": 6,
+      "category": "General",
+      "priority": "High"
+    },
+    "Phylo": {
+      "functions": [
+        {
+          "name": "convert",
+          "signature": "(in_file, in_format, out_file, out_format, parse_args=None, **kwargs)",
+          "doc": "Convert between two tree file formats."
+        },
+        {
+          "name": "draw",
+          "signature": "(tree, label_func=<class 'str'>, do_show=True, show_confidence=True, axes=None, branch_labels=None, label_colors=None, *args, **kwargs)",
+          "doc": "Plot the given tree using matplotlib (or pylab)."
+        },
+        {
+          "name": "draw_ascii",
+          "signature": "(tree, file=None, column_width=80)",
+          "doc": "Draw an ascii-art phylogram of the given tree."
+        },
+        {
+          "name": "parse",
+          "signature": "(file, format, **kwargs)",
+          "doc": "Parse a file iteratively, and yield each of the trees it contains."
+        },
+        {
+          "name": "read",
+          "signature": "(file, format, **kwargs)",
+          "doc": "Parse a file in the given format and return a single tree."
+        },
+        {
+          "name": "to_igraph",
+          "signature": "(tree, vertex_attributes=None, edge_attributes=('color', 'width'))",
+          "doc": "Convert a Tree object to an igraph Graph."
+        },
+        {
+          "name": "to_networkx",
+          "signature": "(tree)",
+          "doc": "Convert a Tree object to a networkx graph."
+        },
+        {
+          "name": "write",
+          "signature": "(trees, file, format, **kwargs)",
+          "doc": "Write a sequence of trees to file in the given format."
+        }
+      ],
+      "classes": [],
+      "function_count": 8,
+      "class_count": 0,
+      "total_tools": 8,
+      "category": "General",
+      "priority": "Medium"
+    },
+    "PDB": {
+      "functions": [
+        {
+          "name": "calc_angle",
+          "signature": "(v1, v2, v3)",
+          "doc": "Calculate angle method."
+        },
+        {
+          "name": "calc_dihedral",
+          "signature": "(v1, v2, v3, v4)",
+          "doc": "Calculate dihedral angle method."
+        },
+        {
+          "name": "extract",
+          "signature": "(structure, chain_id, start, end, filename)",
+          "doc": "Write out selected portion to filename."
+        },
+        {
+          "name": "get_surface",
+          "signature": "(model, MSMS='msms')",
+          "doc": "Represent molecular surface as a vertex list array."
+        },
+        {
+          "name": "is_aa",
+          "signature": "(residue, standard=False)",
+          "doc": "Return True if residue object/string is an amino acid."
+        },
+        {
+          "name": "is_nucleic",
+          "signature": "(residue, standard=False)",
+          "doc": "Return True if residue object/string is a nucleic acid."
+        },
+        {
+          "name": "m2rotaxis",
+          "signature": "(m)",
+          "doc": "Return angles, axis pair that corresponds to rotation matrix m."
+        },
+        {
+          "name": "make_dssp_dict",
+          "signature": "(filename)",
+          "doc": "DSSP dictionary mapping identifiers to properties."
+        },
+        {
+          "name": "parse_pdb_header",
+          "signature": "(infile)",
+          "doc": "Return the header lines of a pdb file as a dictionary."
+        },
+        {
+          "name": "refmat",
+          "signature": "(p, q)",
+          "doc": "Return a (left multiplying) matrix that mirrors p onto q."
+        },
+        {
+          "name": "rotaxis",
+          "signature": "(theta, vector)",
+          "doc": "Calculate left multiplying rotation matrix."
+        },
+        {
+          "name": "rotaxis2m",
+          "signature": "(theta, vector)",
+          "doc": "Calculate left multiplying rotation matrix."
+        },
+        {
+          "name": "rotmat",
+          "signature": "(p, q)",
+          "doc": "Return a (left multiplying) matrix that rotates p onto q."
+        },
+        {
+          "name": "vector_to_axis",
+          "signature": "(line, point)",
+          "doc": "Vector to axis method."
+        }
+      ],
+      "classes": [
+        {
+          "name": "CEAligner",
+          "doc": "Protein Structure Alignment by Combinatorial Extension."
+        },
+        {
+          "name": "CaPPBuilder",
+          "doc": "Use CA--CA distance to find polypeptides."
+        },
+        {
+          "name": "DSSP",
+          "doc": "Run DSSP and parse secondary structure and accessibility."
+        },
+        {
+          "name": "ExposureCN",
+          "doc": "Residue exposure as number of CA atoms around its CA atom."
+        },
+        {
+          "name": "FastMMCIFParser",
+          "doc": "Parse an MMCIF file and return a Structure object."
+        },
+        {
+          "name": "FragmentMapper",
+          "doc": "Map polypeptides in a model to lists of representative fragments."
+        },
+        {
+          "name": "HSExposureCA",
+          "doc": "Class to calculate HSE based on the approximate CA-CB vectors."
+        },
+        {
+          "name": "HSExposureCB",
+          "doc": "Class to calculate HSE based on the real CA-CB vectors."
+        },
+        {
+          "name": "MMCIFIO",
+          "doc": "Write a Structure object or a mmCIF dictionary as a mmCIF file."
+        },
+        {
+          "name": "MMCIFParser",
+          "doc": "Parse a mmCIF file and return a Structure object."
+        },
+        {
+          "name": "NeighborSearch",
+          "doc": "Class for neighbor searching."
+        },
+        {
+          "name": "PDBIO",
+          "doc": "Write a Structure object (or a subset of a Structure object) as a PDB or PQR file."
+        },
+        {
+          "name": "PDBList",
+          "doc": "Quick access to the structure lists on the PDB or its mirrors."
+        },
+        {
+          "name": "PDBMLParser",
+          "doc": "A parser for PDBML (PDB XML) files. See https://pdbml.wwpdb.org/."
+        },
+        {
+          "name": "PDBParser",
+          "doc": "Parse a PDB file and return a Structure object."
+        },
+        {
+          "name": "PPBuilder",
+          "doc": "Use C--N distance to find polypeptides."
+        },
+        {
+          "name": "ResidueDepth",
+          "doc": "Calculate residue and CA depth for all residues."
+        },
+        {
+          "name": "Select",
+          "doc": "Select everything for PDB output (for use as a base class)."
+        },
+        {
+          "name": "ShrakeRupley",
+          "doc": "Calculates SASAs using the Shrake-Rupley algorithm."
+        },
+        {
+          "name": "StructureAlignment",
+          "doc": "Class to align two structures based on an alignment of their sequences."
+        },
+        {
+          "name": "Superimposer",
+          "doc": "Rotate/translate one set of atoms on top of another to minimize RMSD."
+        },
+        {
+          "name": "Vector",
+          "doc": "3D vector."
+        }
+      ],
+      "function_count": 14,
+      "class_count": 22,
+      "total_tools": 36,
+      "category": "General",
+      "priority": "Medium"
+    },
+    "motifs": {
+      "functions": [
+        {
+          "name": "create",
+          "signature": "(instances, alphabet='ACGT')",
+          "doc": "Create a Motif object."
+        },
+        {
+          "name": "parse",
+          "signature": "(handle, fmt, strict=True)",
+          "doc": "Parse an output file from a motif finding program."
+        },
+        {
+          "name": "read",
+          "signature": "(handle, fmt, strict=True)",
+          "doc": "Read a motif from a handle using the specified file-format."
+        },
+        {
+          "name": "reverse_complement",
+          "signature": "(sequence, inplace=False)",
+          "doc": "Return the reverse complement as a DNA sequence."
+        },
+        {
+          "name": "reverse_complement_rna",
+          "signature": "(sequence, inplace=False)",
+          "doc": "Return the reverse complement as an RNA sequence."
+        },
+        {
+          "name": "urlencode",
+          "signature": "(query, doseq=False, safe='', encoding=None, errors=None, quote_via=<function quote_plus at 0x7fc449f2ab60>)",
+          "doc": "Encode a dict or sequence of two-element tuples into a URL query string."
+        },
+        {
+          "name": "urlopen",
+          "signature": "(url, data=None, timeout=<object object at 0x7fc44a2a4ab0>, *, cafile=None, capath=None, cadefault=False, context=None)",
+          "doc": "Open the URL url, which can be either a string or a Request object."
+        },
+        {
+          "name": "write",
+          "signature": "(motifs, fmt, **kwargs)",
+          "doc": "Return a string representation of motifs in the given format."
+        }
+      ],
+      "classes": [
+        {
+          "name": "Alignment",
+          "doc": "Represents a sequence alignment."
+        },
+        {
+          "name": "BiopythonDeprecationWarning",
+          "doc": "Biopython deprecation warning."
+        },
+        {
+          "name": "Instances",
+          "doc": "Class containing a list of sequences that made the motifs."
+        },
+        {
+          "name": "Motif",
+          "doc": "A class representing sequence motifs."
+        },
+        {
+          "name": "Request",
+          "doc": ""
+        }
+      ],
+      "function_count": 8,
+      "class_count": 5,
+      "total_tools": 13,
+      "category": "General",
+      "priority": "Medium"
+    },
+    "Restriction": {
+      "functions": [],
+      "classes": [
+        {
+          "name": "AanI",
+          "doc": ""
+        },
+        {
+          "name": "AarI",
+          "doc": ""
+        },
+        {
+          "name": "AasI",
+          "doc": ""
+        },
+        {
+          "name": "AatII",
+          "doc": ""
+        },
+        {
+          "name": "Aba13301I",
+          "doc": ""
+        },
+        {
+          "name": "Aba6411II",
+          "doc": ""
+        },
+        {
+          "name": "AbaB8342IV",
+          "doc": ""
+        },
+        {
+          "name": "AbaCIII",
+          "doc": ""
+        },
+        {
+          "name": "AbaPBA3II",
+          "doc": ""
+        },
+        {
+          "name": "AbaSI",
+          "doc": ""
+        },
+        {
+          "name": "AbaUMB2I",
+          "doc": ""
+        },
+        {
+          "name": "Abr4036II",
+          "doc": ""
+        },
+        {
+          "name": "AbsI",
+          "doc": ""
+        },
+        {
+          "name": "Acc16I",
+          "doc": ""
+        },
+        {
+          "name": "Acc36I",
+          "doc": ""
+        },
+        {
+          "name": "Acc65I",
+          "doc": ""
+        },
+        {
+          "name": "Acc65V",
+          "doc": ""
+        },
+        {
+          "name": "AccB1I",
+          "doc": ""
+        },
+        {
+          "name": "AccB7I",
+          "doc": ""
+        },
+        {
+          "name": "AccBSI",
+          "doc": ""
+        },
+        {
+          "name": "... and 1071 more restriction enzymes",
+          "doc": "Additional restriction enzyme classes"
+        }
+      ],
+      "function_count": 0,
+      "class_count": 20,
+      "total_tools": 21,
+      "category": "General",
+      "priority": "Medium"
+    },
+    "pairwise2": {
+      "functions": [
+        {
+          "name": "calc_affine_penalty",
+          "signature": "(length, open, extend, penalize_extend_when_opening)",
+          "doc": "Calculate a penalty score for the gap function."
+        },
+        {
+          "name": "format_alignment",
+          "signature": "(align1, align2, score, begin, end, full_sequences=False)",
+          "doc": "Format the alignment prettily into a string."
+        },
+        {
+          "name": "namedtuple",
+          "signature": "(typename, field_names, *, rename=False, defaults=None, module=None)",
+          "doc": "Returns a new subclass of tuple with named fields."
+        },
+        {
+          "name": "print_matrix",
+          "signature": "(matrix)",
+          "doc": "Print out a matrix for debugging purposes."
+        }
+      ],
+      "classes": [
+        {
+          "name": "Alignment",
+          "doc": "Alignment(seqA, seqB, score, start, end)"
+        },
+        {
+          "name": "BiopythonDeprecationWarning",
+          "doc": "Biopython deprecation warning."
+        },
+        {
+          "name": "BiopythonWarning",
+          "doc": "Biopython warning."
+        },
+        {
+          "name": "affine_penalty",
+          "doc": "Create a gap function for use in an alignment."
+        },
+        {
+          "name": "dictionary_match",
+          "doc": "Create a match function for use in an alignment."
+        },
+        {
+          "name": "identity_match",
+          "doc": "Create a match function for use in an alignment."
+        }
+      ],
+      "function_count": 4,
+      "class_count": 6,
+      "total_tools": 10,
+      "category": "General",
+      "priority": "Low"
+    },
+    "Cluster": {
+      "functions": [
+        {
+          "name": "clustercentroids",
+          "signature": "(data, mask=None, clusterid=None, method='a', transpose=False)",
+          "doc": "Calculate and return the centroid of each cluster."
+        },
+        {
+          "name": "clusterdistance",
+          "signature": "(data, mask=None, weight=None, index1=None, index2=None, method='a', dist='e', transpose=False)",
+          "doc": "Calculate and return the distance between two clusters."
+        },
+        {
+          "name": "distancematrix",
+          "signature": "(data, mask=None, weight=None, transpose=False, dist='e')",
+          "doc": "Calculate and return a distance matrix from the data."
+        },
+        {
+          "name": "kcluster",
+          "signature": "(data, nclusters=2, mask=None, weight=None, transpose=False, npass=1, method='a', dist='e', initialid=None)",
+          "doc": "Perform k-means clustering."
+        },
+        {
+          "name": "kmedoids",
+          "signature": "(distance, nclusters=2, npass=1, initialid=None)",
+          "doc": "Perform k-medoids clustering."
+        },
+        {
+          "name": "pca",
+          "signature": "(data)",
+          "doc": "Perform principal component analysis."
+        },
+        {
+          "name": "read",
+          "signature": "(handle)",
+          "doc": "Read gene expression data from the file handle and return a Record."
+        },
+        {
+          "name": "somcluster",
+          "signature": "(data, mask=None, weight=None, transpose=False, nxgrid=2, nygrid=1, inittau=0.02, niter=1, dist='e')",
+          "doc": "Calculate a Self-Organizing Map."
+        },
+        {
+          "name": "treecluster",
+          "signature": "(data, mask=None, weight=None, transpose=False, method='m', dist='e', distancematrix=None)",
+          "doc": "Perform hierarchical clustering, and return a Tree object."
+        }
+      ],
+      "classes": [
+        {
+          "name": "Node",
+          "doc": "A Node object describes a single node in a hierarchical clustering tree."
+        },
+        {
+          "name": "Record",
+          "doc": "Store gene expression data."
+        },
+        {
+          "name": "Tree",
+          "doc": "Hierarchical clustering tree."
+        }
+      ],
+      "function_count": 9,
+      "class_count": 3,
+      "total_tools": 12,
+      "category": "General",
+      "priority": "Low"
+    },
+    "PopGen": {
+      "functions": [],
+      "classes": [],
+      "function_count": 0,
+      "class_count": 0,
+      "total_tools": 0,
+      "category": "General",
+      "priority": "Low"
+    },
+    "GenBank": {
+      "functions": [
+        {
+          "name": "parse",
+          "signature": "(handle)",
+          "doc": "Iterate over GenBank formatted entries as Record objects."
+        },
+        {
+          "name": "read",
+          "signature": "(handle)",
+          "doc": "Read a handle containing a single GenBank entry as a Record object."
+        }
+      ],
+      "classes": [
+        {
+          "name": "BiopythonParserWarning",
+          "doc": "Biopython parser warning."
+        },
+        {
+          "name": "FeatureParser",
+          "doc": "Parse GenBank files into Seq + Feature objects (OBSOLETE)."
+        },
+        {
+          "name": "FeatureValueCleaner",
+          "doc": "Provide specialized capabilities for cleaning up values in features."
+        },
+        {
+          "name": "GenBankScanner",
+          "doc": "For extracting chunks of information in GenBank files."
+        },
+        {
+          "name": "Iterator",
+          "doc": "Iterator interface to move over a file of GenBank entries one at a time (OBSOLETE)."
+        },
+        {
+          "name": "Location",
+          "doc": "Abstract base class representing a location."
+        },
+        {
+          "name": "LocationParserError",
+          "doc": "Could not parse a feature location string."
+        },
+        {
+          "name": "ParserFailureError",
+          "doc": "Failure caused by some kind of problem in the parser."
+        },
+        {
+          "name": "RecordParser",
+          "doc": "Parse GenBank files into Record objects (OBSOLETE)."
+        },
+        {
+          "name": "Reference",
+          "doc": "Represent a Generic Reference object."
+        },
+        {
+          "name": "Seq",
+          "doc": "Read-only sequence object (essentially a string with biological methods)."
+        },
+        {
+          "name": "SeqFeature",
+          "doc": "Represent a Sequence Feature on an object."
+        },
+        {
+          "name": "SimpleLocation",
+          "doc": "Specify the location of a feature along a sequence."
+        }
+      ],
+      "function_count": 2,
+      "class_count": 13,
+      "total_tools": 15,
+      "category": "NCBI",
+      "priority": "Low"
+    },
+    "SwissProt": {
+      "functions": [
+        {
+          "name": "parse",
+          "signature": "(source)",
+          "doc": "Read multiple SwissProt records from file."
+        },
+        {
+          "name": "read",
+          "signature": "(source)",
+          "doc": "Read one SwissProt record from file."
+        }
+      ],
+      "classes": [
+        {
+          "name": "FeatureTable",
+          "doc": "Stores feature annotations for specific regions of the sequence."
+        },
+        {
+          "name": "Position",
+          "doc": "Abstract base class representing a position."
+        },
+        {
+          "name": "Record",
+          "doc": "Holds information from a SwissProt record."
+        },
+        {
+          "name": "Reference",
+          "doc": "Holds information from one reference in a SwissProt entry."
+        },
+        {
+          "name": "SeqFeature",
+          "doc": "Represent a Sequence Feature on an object."
+        },
+        {
+          "name": "SimpleLocation",
+          "doc": "Specify the location of a feature along a sequence."
+        },
+        {
+          "name": "SwissProtParserError",
+          "doc": "An error occurred while parsing a SwissProt file."
+        }
+      ],
+      "function_count": 2,
+      "class_count": 7,
+      "total_tools": 9,
+      "category": "General",
+      "priority": "Low"
+    },
+    "UniProt": {
+      "functions": [
+        {
+          "name": "search",
+          "signature": "(query: str, fields: Optional[list[str]] = None, batch_size: int = 500) -> Bio.UniProt._UniProtSearchResults",
+          "doc": "Search the UniProt database."
+        },
+        {
+          "name": "urlopen",
+          "signature": "(url, data=None, timeout=<object object at 0x7fc44a2a4ab0>, *, cafile=None, capath=None, cadefault=False, context=None)",
+          "doc": "Open the URL url, which can be either a string or a Request object."
+        }
+      ],
+      "classes": [
+        {
+          "name": "HTTPResponse",
+          "doc": ""
+        }
+      ],
+      "function_count": 2,
+      "class_count": 1,
+      "total_tools": 3,
+      "category": "General",
+      "priority": "Low"
+    },
+    "ExPASy": {
+      "functions": [
+        {
+          "name": "get_prodoc_entry",
+          "signature": "(id, cgi='https://prosite.expasy.org/cgi-bin/prosite/get-prodoc-entry')",
+          "doc": "Get a text handle to a PRODOC entry at ExPASy in HTML format."
+        },
+        {
+          "name": "get_prosite_entry",
+          "signature": "(id, cgi='https://prosite.expasy.org/cgi-bin/prosite/get-prosite-entry')",
+          "doc": "Get a text handle to a PROSITE entry at ExPASy in HTML format."
+        },
+        {
+          "name": "get_prosite_raw",
+          "signature": "(id, cgi=None)",
+          "doc": "Get a text handle to a raw PROSITE or PRODOC record at ExPASy."
+        },
+        {
+          "name": "get_sprot_raw",
+          "signature": "(id)",
+          "doc": "Get a text handle to a raw SwissProt entry at ExPASy."
+        },
+        {
+          "name": "urlopen",
+          "signature": "(url, data=None, timeout=<object object at 0x7fc44a2a4ab0>, *, cafile=None, capath=None, cadefault=False, context=None)",
+          "doc": "Open the URL url, which can be either a string or a Request object."
+        }
+      ],
+      "classes": [
+        {
+          "name": "HTTPError",
+          "doc": "Raised when HTTP error occurs, but also acts like non-error return"
+        }
+      ],
+      "function_count": 5,
+      "class_count": 1,
+      "total_tools": 6,
+      "category": "General",
+      "priority": "Low"
+    },
+    "KEGG": {
+      "functions": [],
+      "classes": [],
+      "function_count": 0,
+      "class_count": 0,
+      "total_tools": 0,
+      "category": "General",
+      "priority": "Low"
+    },
+    "TogoWS": {
+      "functions": [
+        {
+          "name": "convert",
+          "signature": "(data, in_format, out_format)",
+          "doc": "Call TogoWS for file format conversion."
+        },
+        {
+          "name": "entry",
+          "signature": "(db, id, format=None, field=None)",
+          "doc": "Call TogoWS 'entry' to fetch a record."
+        },
+        {
+          "name": "function_with_previous",
+          "signature": "(func: ~F) -> Bio._utils._FunctionWithPrevious[~F]",
+          "doc": "Decorate a function as having an attribute named 'previous'."
+        },
+        {
+          "name": "quote",
+          "signature": "(string, safe='/', encoding=None, errors=None)",
+          "doc": "quote('abc def') -> 'abc%20def'"
+        },
+        {
+          "name": "search",
+          "signature": "(db, query, offset=None, limit=None, format=None)",
+          "doc": "Call TogoWS search."
+        },
+        {
+          "name": "search_count",
+          "signature": "(db, query)",
+          "doc": "Call TogoWS search count to see how many matches a search gives."
+        },
+        {
+          "name": "search_iter",
+          "signature": "(db, query, limit=None, batch=100)",
+          "doc": "Call TogoWS search iterating over the results (generator function)."
+        },
+        {
+          "name": "urlopen",
+          "signature": "(url, data=None, timeout=<object object at 0x7fc44a2a4ab0>, *, cafile=None, capath=None, cadefault=False, context=None)",
+          "doc": "Open the URL url, which can be either a string or a Request object."
+        }
+      ],
+      "classes": [],
+      "function_count": 8,
+      "class_count": 0,
+      "total_tools": 8,
+      "category": "General",
+      "priority": "Low"
+    },
+    "Medline": {
+      "functions": [
+        {
+          "name": "parse",
+          "signature": "(handle)",
+          "doc": "Read Medline records one by one from the handle."
+        },
+        {
+          "name": "read",
+          "signature": "(handle)",
+          "doc": "Read a single Medline record from the handle."
+        }
+      ],
+      "classes": [
+        {
+          "name": "Record",
+          "doc": "A dictionary holding information from a Medline record."
+        }
+      ],
+      "function_count": 2,
+      "class_count": 1,
+      "total_tools": 3,
+      "category": "NCBI",
+      "priority": "Low"
+    },
+    "Geo": {
+      "functions": [
+        {
+          "name": "parse",
+          "signature": "(handle)",
+          "doc": "Read Gene Expression Omnibus records from file handle."
+        }
+      ],
+      "classes": [],
+      "function_count": 1,
+      "class_count": 0,
+      "total_tools": 1,
+      "category": "NCBI",
+      "priority": "Low"
+    },
+    "SeqUtils": {
+      "functions": [
+        {
+          "name": "GC123",
+          "signature": "(seq)",
+          "doc": "Calculate G+C content: total, for first, second and third positions."
+        },
+        {
+          "name": "GC_skew",
+          "signature": "(seq, window=100)",
+          "doc": "Calculate GC skew (G-C)/(G+C) for multiple windows along the sequence."
+        },
+        {
+          "name": "complement",
+          "signature": "(sequence, inplace=False)",
+          "doc": "Return the complement as a DNA sequence."
+        },
+        {
+          "name": "complement_rna",
+          "signature": "(sequence, inplace=False)",
+          "doc": "Return the complement as an RNA sequence."
+        },
+        {
+          "name": "gc_fraction",
+          "signature": "(seq, ambiguous='remove')",
+          "doc": "Calculate G+C percentage in seq (float between 0 and 1)."
+        },
+        {
+          "name": "molecular_weight",
+          "signature": "(seq, seq_type='DNA', double_stranded=False, circular=False, monoisotopic=False)",
+          "doc": "Calculate the molecular mass of DNA, RNA or protein sequences as float."
+        },
+        {
+          "name": "nt_search",
+          "signature": "(seq, subseq)",
+          "doc": "Search for a DNA subseq in seq, return list of [subseq, positions]."
+        },
+        {
+          "name": "seq1",
+          "signature": "(seq, custom_map=None, undef_code='X')",
+          "doc": "Convert protein sequence from three-letter to one-letter code."
+        },
+        {
+          "name": "seq3",
+          "signature": "(seq, custom_map=None, undef_code='Xaa')",
+          "doc": "Convert protein sequence from one-letter to three-letter code."
+        },
+        {
+          "name": "six_frame_translations",
+          "signature": "(seq, genetic_code=1)",
+          "doc": "Return pretty string showing the 6 frame translations and GC content."
+        },
+        {
+          "name": "translate",
+          "signature": "(sequence, table='Standard', stop_symbol='*', to_stop=False, cds=False, gap=None)",
+          "doc": "Translate a nucleotide sequence into amino acids."
+        },
+        {
+          "name": "xGC_skew",
+          "signature": "(seq, window=1000, zoom=100, r=300, px=100, py=100)",
+          "doc": "Calculate and plot normal and accumulated GC skew (GRAPHICS !!!)."
+        }
+      ],
+      "classes": [
+        {
+          "name": "CodonAdaptationIndex",
+          "doc": "A codon adaptation index (CAI) implementation."
+        },
+        {
+          "name": "Seq",
+          "doc": "Read-only sequence object (essentially a string with biological methods)."
+        }
+      ],
+      "function_count": 12,
+      "class_count": 2,
+      "total_tools": 14,
+      "category": "General",
+      "priority": "Low"
+    },
+    "SeqFeature": {
+      "functions": [
+        {
+          "name": "abstractmethod",
+          "signature": "(funcobj)",
+          "doc": "A decorator indicating abstract methods."
+        },
+        {
+          "name": "reverse_complement",
+          "signature": "(sequence, inplace=False)",
+          "doc": "Return the reverse complement as a DNA sequence."
+        }
+      ],
+      "classes": [
+        {
+          "name": "ABC",
+          "doc": "Helper class that provides a standard way to create an ABC using"
+        },
+        {
+          "name": "AfterPosition",
+          "doc": "Specify a position where the actual location is found after it."
+        },
+        {
+          "name": "BeforePosition",
+          "doc": "Specify a position where the actual location occurs before it."
+        },
+        {
+          "name": "BetweenPosition",
+          "doc": "Specify the position of a boundary between two coordinates (OBSOLETE?)."
+        },
+        {
+          "name": "BiopythonDeprecationWarning",
+          "doc": "Biopython deprecation warning."
+        },
+        {
+          "name": "BiopythonParserWarning",
+          "doc": "Biopython parser warning."
+        },
+        {
+          "name": "CompoundLocation",
+          "doc": "For handling joins etc where a feature location has several parts."
+        },
+        {
+          "name": "ExactPosition",
+          "doc": "Specify the specific position of a boundary."
+        },
+        {
+          "name": "FeatureLocation",
+          "doc": "Specify the location of a feature along a sequence."
+        },
+        {
+          "name": "Location",
+          "doc": "Abstract base class representing a location."
+        },
+        {
+          "name": "LocationParserError",
+          "doc": "Could not parse a feature location string."
+        },
+        {
+          "name": "MutableSeq",
+          "doc": "An editable sequence object."
+        },
+        {
+          "name": "OneOfPosition",
+          "doc": "Specify a position where the location can be multiple positions."
+        },
+        {
+          "name": "Position",
+          "doc": "Abstract base class representing a position."
+        },
+        {
+          "name": "Reference",
+          "doc": "Represent a Generic Reference object."
+        },
+        {
+          "name": "Seq",
+          "doc": "Read-only sequence object (essentially a string with biological methods)."
+        },
+        {
+          "name": "SeqFeature",
+          "doc": "Represent a Sequence Feature on an object."
+        },
+        {
+          "name": "SimpleLocation",
+          "doc": "Specify the location of a feature along a sequence."
+        },
+        {
+          "name": "UncertainPosition",
+          "doc": "Specify a specific position which is uncertain."
+        },
+        {
+          "name": "UnknownPosition",
+          "doc": "Specify a specific position which is unknown (has no position)."
+        },
+        {
+          "name": "WithinPosition",
+          "doc": "Specify the position of a boundary within some coordinates."
+        }
+      ],
+      "function_count": 2,
+      "class_count": 21,
+      "total_tools": 23,
+      "category": "General",
+      "priority": "Low"
+    },
+    "SeqRecord": {
+      "functions": [
+        {
+          "name": "cast",
+          "signature": "(typ, val)",
+          "doc": "Cast a value to a type."
+        },
+        {
+          "name": "overload",
+          "signature": "(func)",
+          "doc": "Decorator for overloaded functions/methods."
+        }
+      ],
+      "classes": [
+        {
+          "name": "Any",
+          "doc": "Special type indicating an unconstrained type."
+        },
+        {
+          "name": "BiopythonDeprecationWarning",
+          "doc": "Biopython deprecation warning."
+        },
+        {
+          "name": "Iterator",
+          "doc": ""
+        },
+        {
+          "name": "MutableSeq",
+          "doc": "An editable sequence object."
+        },
+        {
+          "name": "Seq",
+          "doc": "Read-only sequence object (essentially a string with biological methods)."
+        },
+        {
+          "name": "SeqRecord",
+          "doc": "A SeqRecord object holds a sequence and information about it."
+        },
+        {
+          "name": "Sequence",
+          "doc": "All the operations on a read-only sequence."
+        },
+        {
+          "name": "StreamModeError",
+          "doc": "Incorrect stream mode (text vs binary)."
+        },
+        {
+          "name": "StringIO",
+          "doc": "Text I/O implementation using an in-memory buffer."
+        },
+        {
+          "name": "UndefinedSequenceError",
+          "doc": "Sequence contents is undefined."
+        }
+      ],
+      "function_count": 2,
+      "class_count": 10,
+      "total_tools": 12,
+      "category": "General",
+      "priority": "Low"
+    }
+  }
+}

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DIVE: Scaling Diversity in Agentic Task Synthesis for Generalizable Tool Use</title>
+  <meta name="description" content="DIVE — an evidence-driven recipe that scales diversity in agentic task synthesis for generalizable tool use.">
+  <link rel="icon" type="image/png" href="static/images/favicon.png">
+  <link rel="apple-touch-icon" href="static/images/apple-touch-icon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero is-light">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title publication-title"><img src="static/images/logo.png" alt="DIVE logo" class="pub-logo">DIVE: Scaling Diversity in Agentic Task Synthesis for Generalizable Tool Use</h1>
+      <div class="publication-authors">
+        <a href="https://sheep333c.github.io/">Aili Chen</a><sup>♠♣</sup>,
+        Chi Zhang<sup>♣</sup>,
+        Junteng Liu<sup>♣</sup>,
+        <a href="https://jiangjiechen.github.io/">Jiangjie Chen</a><sup>♦</sup>,
+        Chengyu Du<sup>♠♣</sup>,
+        Yunji Li<sup>♣</sup>,
+        Ming Zhong<sup>♣</sup>,
+        Qin Wang<sup>♣</sup>,
+        Zhengmao Zhu<sup>♣</sup>,
+        Jiayuan Song<sup>♣</sup>,
+        Ke Ji<sup>♣</sup>,
+        Junxian He<sup>♣</sup>,
+        Pengyu Zhao<sup>♣</sup>,
+        Yanghua Xiao<sup>♠†</sup>
+      </div>
+      <div class="publication-affiliations" style="margin-top:0.4rem; font-size:0.95rem;">
+        <sup>♠</sup> Fudan University &nbsp;&nbsp;
+        <sup>♣</sup> MiniMax &nbsp;&nbsp;
+        <sup>♦</sup> Independent
+      </div>
+      <div class="publication-contact" style="margin-top:0.3rem; font-size:0.9rem;">
+        📧 {alchen20, shawyh}@fudan.edu.cn
+      </div>
+      <div class="link-block" style="margin-top:1.2rem;">
+        <a class="button is-dark is-rounded" href="#"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
+        <a class="button is-dark is-rounded" href="#"><span class="icon"><i class="fab fa-github"></i></span><span>Code</span></a>
+        <a class="button is-dark is-rounded" href="#"><span class="icon"><i class="fas fa-database"></i></span><span>Data</span></a>
+        <a class="button is-dark is-rounded" href="#"><span class="icon"><i class="fas fa-cube"></i></span><span>Model</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABSTRACT (left) + FIGURE 1 (right) ===== -->
+<section class="section abstract-teaser-section">
+  <div class="container">
+    <div class="abstract-teaser-grid">
+      <div class="abstract-side">
+        <h2 class="section-title">Abstract</h2>
+        <div class="abstract-text">
+          <p>Recent work synthesizes agentic tasks for post-training tool-using LLMs, yet robust generalization under shifts in tasks and toolsets remains an open challenge. We trace this brittleness to insufficient diversity in synthesized tasks.</p>
+          <p style="margin-top:0.6rem;">We propose <strong>DIVE</strong>, an evidence-driven recipe that inverts synthesis order — executing diverse, real-world tools first and reverse-deriving tasks strictly entailed by the resulting traces. DIVE scales structural diversity along two axes: tool-pool coverage and per-task toolset variety, across 373 tools in five domains.</p>
+          <p style="margin-top:0.6rem;">Training Qwen3-8B on DIVE data (48k SFT + 3.2k RL) improves by <strong>+22 average points</strong> across 9 OOD benchmarks and outperforms the strongest 8B baseline by <strong>+68%</strong>. <em>Diversity scaling consistently outperforms quantity scaling</em>, even with 4× less data.</p>
+        </div>
+        <div class="highlight-cards">
+          <div class="highlight-card">
+            <div class="big-number">+22 avg</div>
+            <div class="card-desc">across <strong>9 OOD</strong> benchmarks</div>
+          </div>
+          <div class="highlight-card">
+            <div class="big-number">+68%</div>
+            <div class="card-desc">vs strongest <strong>8B</strong> baseline</div>
+          </div>
+          <div class="highlight-card">
+            <div class="big-number">373</div>
+            <div class="card-desc">tools, <strong>5 domains</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="teaser-side">
+        <img src="static/images/teaser.png" alt="Motivation and overview of DIVE">
+        <p class="figure-caption"><strong>Figure 1.</strong> Top: fixed-toolset limits diversity. Middle: simulated tools risk unverifiability. Bottom: DIVE's evidence-first synthesis. Radar: Gray=base; Blue=deep-research; Purple=DIVE.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== METHOD ===== -->
+<section class="section has-bg">
+  <div class="container">
+    <h2 class="section-title reveal">About DIVE</h2>
+    <div class="method-tabs reveal">
+      <div class="tabs is-centered is-boxed">
+        <ul>
+          <li class="is-active" data-tab="tab-phase1"><a><span class="icon is-small"><i class="fas fa-layer-group"></i></span><span>Phase 1: Resource Preparation</span></a></li>
+          <li data-tab="tab-phase2"><a><span class="icon is-small"><i class="fas fa-flask"></i></span><span>Phase 2: Evidence-Driven Synthesis</span></a></li>
+          <li data-tab="tab-phase3"><a><span class="icon is-small"><i class="fas fa-graduation-cap"></i></span><span>Phase 3: Agentic Training</span></a></li>
+        </ul>
+      </div>
+      <div class="tab-content is-active" id="tab-phase1">
+        <div class="content">
+          <p>Three <strong>diverse and decoupled resource pools</strong>:</p>
+          <div class="columns" style="margin-top:0.8rem;">
+            <div class="column"><div class="notification is-info is-light"><h4 class="title is-6"><i class="fas fa-wrench"></i> Tool Pool</h4><p>373 validated tools across 5 domains, Retrieval or Processing. Crawl–Validate pipeline with unit tests.</p></div></div>
+            <div class="column"><div class="notification is-success is-light"><h4 class="title is-6"><i class="fas fa-seedling"></i> Seed Pool</h4><p>~5k entity seeds/domain from Wikipedia, PubMed, NCBI, stock exchanges.</p></div></div>
+            <div class="column"><div class="notification is-warning is-light"><h4 class="title is-6"><i class="fas fa-book-open"></i> Exemplar Pool</h4><p>Query-only exemplars with structural priors and implicit tool-use patterns.</p></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-phase2">
+        <div class="content">
+          <p><strong>Evidence Collection → Task Derivation loop</strong>:</p>
+          <ol style="margin-top:0.8rem;">
+            <li><strong>Config Sampling</strong> — seed $S$, toolset $\mathcal{T}$ (15–50), exemplars $\mathcal{X}$ (3–5).</li>
+            <li><strong>Evidence Collection</strong> — execute real tools: $E_k = \mathcal{F}_{\text{col}}(Q_{k-1}, E_{k-1} \mid \mathcal{T})$</li>
+            <li><strong>Task Derivation</strong> — reverse-derive: $(Q_k, A_k) = \mathcal{F}_{\text{der}}(Q_{k-1}, E_k \mid \mathcal{X})$</li>
+            <li><strong>Iterate</strong> $K$ times.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-phase3">
+        <div class="content">
+          <div class="columns">
+            <div class="column"><div class="notification is-link is-light"><h4 class="title is-6">SFT Cold Start</h4><p>Teacher + rejection sampling → 48k verified trajectories.</p></div></div>
+            <div class="column"><div class="notification is-primary is-light"><h4 class="title is-6">Agentic RL</h4><p>3.2k frontier tasks, GRPO. $R = \alpha R_{\text{format}} + R_{\text{correct}}$</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="figure-container figure-medium reveal" style="margin-top:1rem;">
+      <img src="static/images/pipeline.png" alt="DIVE framework">
+      <p class="figure-caption"><strong>Figure 2.</strong> DIVE framework: (1) Resource Preparation; (2) Evidence-Driven Synthesis; (3) Agentic Training.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EVALUATION BENCHMARKS ===== -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title reveal">Evaluation Benchmarks</h2>
+    <p class="reveal table-caption">
+      We evaluate across 10 benchmarks organized into three tiers with progressively increasing distribution shift.
+      We characterize five OOD factors relative to DIVE's training data:
+    </p>
+    <div class="reveal ood-legend">
+      <div class="ood-legend-item"><span class="ood-tag task">Task</span> shifted task distribution</div>
+      <div class="ood-legend-item"><span class="ood-tag pool">Pool</span> unseen tool pool</div>
+      <div class="ood-legend-item"><span class="ood-tag set">Set</span> unseen toolset</div>
+      <div class="ood-legend-item"><span class="ood-tag proto">Proto</span> non-OpenAI protocol</div>
+      <div class="ood-legend-item"><span class="ood-tag env">Env</span> stateful environment</div>
+    </div>
+    <div class="results-table-wrapper reveal">
+      <table class="bench-taxonomy">
+        <colgroup>
+          <col style="width:36px">
+          <col style="width:160px">
+          <col style="width:200px">
+          <col style="width:240px">
+          <col>
+          <col style="width:60px">
+          <col style="width:60px">
+          <col style="width:60px">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Tier</th>
+            <th>Task Family</th>
+            <th>Benchmark</th>
+            <th>OOD Factors</th>
+            <th>Tool Pool</th>
+            <th>Toolset</th>
+            <th>Protocol</th>
+            <th>Env</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cat-sep">
+            <td class="cat-label">L1</td>
+            <td>In-Distribution</td>
+            <td><a href="benchmarks/dive-eval.html">DIVE-Eval</a></td>
+            <td>—</td>
+            <td>384 Tools (General + Expert)</td>
+            <td>Per-task</td>
+            <td>OpenAI</td>
+            <td>Stateless</td>
+          </tr>
+          <tr class="cat-sep">
+            <td class="cat-label" rowspan="2">L2</td>
+            <td>General DeepResearch</td>
+            <td><a href="benchmarks/gaia.html">GAIA</a>, <a href="benchmarks/hle.html">HLE</a>, <a href="benchmarks/browsecomp.html">BC</a>, <a href="benchmarks/xbench.html">XB-DS</a></td>
+            <td><span class="ood-tag task">Task</span> <span class="ood-tag set">Set</span></td>
+            <td>Search / Browse</td>
+            <td>Uniform</td>
+            <td>OpenAI</td>
+            <td>Stateless</td>
+          </tr>
+          <tr>
+            <td>Domain DeepResearch</td>
+            <td><a href="benchmarks/finsearchcomp.html">FinSearchComp</a> (Global)</td>
+            <td><span class="ood-tag task">Task</span> <span class="ood-tag set">Set</span></td>
+            <td>Search / Browse / Code</td>
+            <td>Uniform</td>
+            <td>OpenAI</td>
+            <td>Stateless</td>
+          </tr>
+          <tr class="cat-sep">
+            <td class="cat-label last-group" rowspan="4">L3</td>
+            <td>Financial Specialist</td>
+            <td><a href="benchmarks/fab.html">FAB</a></td>
+            <td><span class="ood-tag task">Task</span> <span class="ood-tag pool">Pool</span> <span class="ood-tag set">Set</span></td>
+            <td>EDGAR / Web / Parse</td>
+            <td>Uniform</td>
+            <td>OpenAI</td>
+            <td>Stateless</td>
+          </tr>
+          <tr>
+            <td>Medical Specialist</td>
+            <td><a href="benchmarks/medagentbench.html">MAB</a></td>
+            <td><span class="ood-tag task">Task</span> <span class="ood-tag pool">Pool</span> <span class="ood-tag set">Set</span> <span class="ood-tag proto">Proto</span> <span class="ood-tag env">Env</span></td>
+            <td>FHIR GET / POST</td>
+            <td>Uniform</td>
+            <td>HTTP</td>
+            <td>Stateful</td>
+          </tr>
+          <tr>
+            <td>Software Engineering</td>
+            <td><a href="benchmarks/swebench.html">SWE-bench</a></td>
+            <td><span class="ood-tag task">Task</span> <span class="ood-tag pool">Pool</span> <span class="ood-tag set">Set</span> <span class="ood-tag env">Env</span></td>
+            <td>Bash / Search / Editor</td>
+            <td>Uniform</td>
+            <td>OpenAI</td>
+            <td>Stateful</td>
+          </tr>
+          <tr>
+            <td>Zero-Shot Generalist</td>
+            <td><a href="benchmarks/toolathlon.html">Toolathlon</a></td>
+            <td><span class="ood-tag task">Task</span> <span class="ood-tag pool">Pool</span> <span class="ood-tag set">Set</span> <span class="ood-tag env">Env</span></td>
+            <td>604 Tools (32 MCP Apps)</td>
+            <td>Per-task</td>
+            <td>OpenAI</td>
+            <td>Stateful</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MAIN RESULTS TABLE ===== -->
+<section class="section has-bg">
+  <div class="container">
+    <h2 class="section-title reveal">Main Results</h2>
+    <div class="reveal section-intro">
+      <p>We compare DIVE-8B against two categories: <strong>8B baselines</strong> trained on other synthesized data (including task-specific specialists like WebExplorer-8B and generalization-oriented models like EnvScaler-8B), and <strong>frontier models</strong> (≫8B) including Gemini-3-Pro, Claude-4-Sonnet, and DeepSeek-V3.2. All models are evaluated with temperature=1 and top-p=1. Scores are success rates (%).</p>
+    </div>
+    <p class="reveal table-caption" style="margin-top:0.3rem;">
+      Overall comparison across L1–L3 benchmarks.
+      <u>Underline</u>: best overall; <span style="color:var(--primary);font-weight:700;">bold</span>: best among 8B.
+      Click benchmark names for details.
+    </p>
+
+    <div class="results-table-wrapper reveal">
+      <table class="results-table">
+        <colgroup>
+          <col style="min-width:90px"><col>
+          <col class="col-l1">
+          <col span="4" class="col-l2g">
+          <col span="2" class="col-l2d">
+          <col class="col-l3-fab">
+          <col class="col-l3-mab">
+          <col class="col-l3-swe">
+          <col class="col-l3-tool">
+        </colgroup>
+        <thead>
+          <tr class="header-top">
+            <th rowspan="2"></th>
+            <th rowspan="2">Model</th>
+            <th class="group-hdr">L1 In-dist.</th>
+            <th colspan="6" class="group-hdr">L2 OOD w/ General Tools</th>
+            <th colspan="4" class="group-hdr">L3 OOD w/ Specialized Tools</th>
+          </tr>
+          <tr class="header-sub">
+            <th><a href="benchmarks/dive-eval.html">DIVE-Eval</a></th>
+            <th><a href="benchmarks/gaia.html">GAIA</a></th>
+            <th><a href="benchmarks/hle.html">HLE</a></th>
+            <th><a href="benchmarks/browsecomp.html">BC</a></th>
+            <th><a href="benchmarks/xbench.html">XB-DS</a></th>
+            <th><a href="benchmarks/finsearchcomp.html">FSC₂</a></th>
+            <th><a href="benchmarks/finsearchcomp.html">FSC₃</a></th>
+            <th><a href="benchmarks/fab.html">FAB</a></th>
+            <th><a href="benchmarks/medagentbench.html">MAB</a></th>
+            <th><a href="benchmarks/swebench.html">SWE</a></th>
+            <th><a href="benchmarks/toolathlon.html">Toolathlon</a></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Frontier toggle -->
+          <tr class="toggle-row">
+            <td colspan="13">
+              <span class="frontier-toggle is-open">
+                <span class="toggle-icon">▶</span>
+                <span class="toggle-label">Hide Frontier Models</span>
+              </span>
+            </td>
+          </tr>
+          <!-- Frontier models -->
+          <tr class="frontier-row"><td class="cat-label" rowspan="6">Frontier<br>(≫8B)</td><td>Gemini-3-Pro</td><td class="best-all">45.3</td><td class="best-all">80.3</td><td class="best-all">42.9</td><td class="best-all">49.0</td><td class="best-all">76.0</td><td class="best-all">70.6</td><td class="best-all">52.4</td><td class="best-all">39.0</td><td>74.8</td><td class="best-all">76.2</td><td class="best-all">36.4</td></tr>
+          <tr class="frontier-row"><td>Claude-4-Sonnet</td><td>44.8</td><td>63.7</td><td>20.8</td><td>12.8</td><td>62.2</td><td>60.2</td><td>33.3</td><td>39.0</td><td class="best-all">79.3</td><td>72.7</td><td>29.9</td></tr>
+          <tr class="frontier-row"><td>Gemini-2.5-Pro</td><td>29.1</td><td>60.2</td><td>28.4</td><td>9.9</td><td>56.0</td><td>44.5</td><td>27.4</td><td>24.0</td><td>65.1</td><td>59.6</td><td>10.5</td></tr>
+          <tr class="frontier-row frontier-sep"><td>DeepSeek-V3.2-Exp</td><td>40.4</td><td>61.0</td><td>17.9</td><td>40.1</td><td>67.2</td><td>61.3</td><td>27.4</td><td>26.0</td><td>67.3</td><td>67.8</td><td>20.1</td></tr>
+          <tr class="frontier-row"><td>Kimi-K2-0905</td><td>32.9</td><td>60.0</td><td>26.9</td><td>14.1</td><td>61.0</td><td>47.1</td><td>10.7</td><td>28.0</td><td>61.2</td><td>69.2</td><td>13.0</td></tr>
+          <tr class="frontier-row"><td>GPT-OSS-120B</td><td>40.5</td><td>66.0</td><td>19.0</td><td>27.0</td><td>69.5</td><td>61.0</td><td>22.0</td><td>34.0</td><td>64.3</td><td>62.0</td><td>9.8</td></tr>
+          <!-- 8B Baselines -->
+          <tr class="cat-sep"><td class="cat-label" rowspan="3">8B<br>Baselines</td><td>WebExplorer-8B</td><td>19.1</td><td>50.0</td><td>17.3</td><td>15.7</td><td>53.7</td><td>35.9</td><td>18.1</td><td>4.0</td><td>17.8</td><td>7.0</td><td>0.3</td></tr>
+          <tr><td>SWE-Dev-8B</td><td>13.8</td><td>23.2</td><td>6.9</td><td>1.6</td><td>31.6</td><td>30.5</td><td>3.6</td><td>3.0</td><td>14.2</td><td class="best-8b">19.5</td><td>0.0</td></tr>
+          <tr><td>EnvScaler-8B</td><td>15.4</td><td>25.8</td><td>2.8</td><td>1.7</td><td>45.7</td><td>40.7</td><td>10.8</td><td>14.0</td><td>56.6</td><td>11.5</td><td>2.2</td></tr>
+          <!-- Ours -->
+          <tr class="cat-sep"><td class="cat-label ours-label" rowspan="3">Ours</td><td>Qwen3-8B (base)</td><td>13.0</td><td>22.4</td><td>6.4</td><td>1.3</td><td>24.0</td><td>28.6</td><td>7.1</td><td>2.0</td><td>38.4</td><td>10.8</td><td>0.9</td></tr>
+          <tr><td>DIVE-8B (SFT)</td><td>35.4</td><td>49.3</td><td>13.8</td><td>12.9</td><td>50.2</td><td>62.1</td><td>33.0</td><td>28.0</td><td>50.2</td><td>13.2</td><td>4.7</td></tr>
+          <tr class="row-highlight"><td>DIVE-8B (RL)</td><td class="best-8b">42.5</td><td class="best-8b">61.2</td><td class="best-8b">17.8</td><td class="best-8b">16.4</td><td class="best-8b">58.1</td><td class="best-8b">67.3</td><td class="best-8b">37.3</td><td class="best-8b">34.0</td><td class="best-8b">57.3</td><td>18.3</td><td class="best-8b">8.3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="takeaway-box reveal" style="margin-top:1.2rem;">
+      <div class="takeaway-label"><i class="fas fa-chart-line"></i> Key Findings</div>
+      <ul>
+        <li><strong>Robust OOD generalization</strong>: DIVE-8B (RL) improves by <strong>+22 avg points</strong> across 9 OOD benchmarks, outperforming the strongest 8B baseline by <strong>+68%</strong>.</li>
+        <li><strong>Competitive with frontier models</strong>: Despite an 8B backbone, DIVE matches or approaches models 10–100× larger on deep-research benchmarks (e.g., GAIA 61.2, FSC₂ 67.3) and challenging specialized tasks (e.g., FAB 34.0, MAB 57.3).</li>
+        <li><strong>Generalist beats specialists</strong>: Without task-specific training, DIVE surpasses specialist agents on their home benchmarks (GAIA: 61.2 vs. 50.0 for WebExplorer-8B), while specialists exhibit negative transfer on unseen domains.</li>
+        <li><strong>Zero-shot tool use</strong>: On Toolathlon — a stringent benchmark with per-task MCP toolsets and stateful environments — DIVE improves from near-zero (0.9) to 8.3, approaching GPT-OSS-120B (9.8) and Gemini-2.5-Pro (10.5).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SCALING ===== -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title reveal">Scaling Analysis</h2>
+    <div class="figure-container scaling-panel reveal">
+      <div class="columns is-mobile is-multiline is-variable is-2">
+        <div class="column is-4-desktop is-12-mobile"><img src="static/images/scaling_comparison_pdf.png" alt=""><p class="figure-caption" style="text-align:center;">(a) Diversity-only vs. Quantity-only</p></div>
+        <div class="column is-4-desktop is-12-mobile"><img src="static/images/fin_scaling_comparison.png" alt=""><p class="figure-caption" style="text-align:center;">(b) Variety-only vs. Pool-Exp+Variety</p></div>
+        <div class="column is-4-desktop is-12-mobile"><img src="static/images/scaling_trajectory_grid.png" alt=""><p class="figure-caption" style="text-align:center;">(c) All-Path Scaling: SFT → RL</p></div>
+      </div>
+      <p class="figure-caption"><strong>Figure 3.</strong> (a) Diversity scaling outperforms quantity scaling with 4× less data. (b) Pool expansion yields faster gains. (c) RL amplifies the diversity-scaling trend across 24 paths.</p>
+    </div>
+    <div class="takeaway-box reveal">
+      <div class="takeaway-label"><i class="fas fa-lightbulb"></i> Key Takeaways</div>
+      <ul>
+        <li><strong>Diversity &gt; Quantity</strong>: Scaling structural diversity yields stronger gains than scaling data volume — even with 4× less data.</li>
+        <li><strong>Two-axis scaling</strong>: Pool expansion (more tools) and variety scaling (more toolset combinations) are complementary; combining both maximizes returns.</li>
+        <li><strong>RL amplifies diversity</strong>: Reinforcement learning consistently magnifies the advantage of diversity-rich SFT checkpoints across all 24 scaling paths.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DIVERSITY ANALYSIS ===== -->
+<section class="section has-bg">
+  <div class="container">
+    <h2 class="section-title reveal">Structural Diversity Analysis</h2>
+    <p class="reveal table-caption">
+      We quantify diversity at three levels: tool-pool coverage, toolset variety, and tool-use pattern complexity.
+    </p>
+
+    <!-- Table (left) + 3 figures stacked (right) -->
+    <div class="diversity-row reveal">
+      <div class="diversity-left">
+        <div class="results-table-wrapper">
+          <table class="bench-taxonomy">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th style="text-align:right;">Gen-DR</th>
+                <th style="text-align:right;">DIVE</th>
+                <th style="text-align:right;">Gain</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="cat-sep">
+                <td>Tools Covered</td>
+                <td style="text-align:right;">2</td>
+                <td style="text-align:right;">373</td>
+                <td style="text-align:right;color:var(--green);font-weight:700;">+186×</td>
+              </tr>
+              <tr>
+                <td>Unique Toolsets</td>
+                <td style="text-align:right;">1</td>
+                <td style="text-align:right;">46,398</td>
+                <td style="text-align:right;color:var(--green);font-weight:700;">+46k×</td>
+              </tr>
+              <tr>
+                <td>Unique Call Seqs</td>
+                <td style="text-align:right;">1,231</td>
+                <td style="text-align:right;">25,084</td>
+                <td style="text-align:right;color:var(--green);font-weight:700;">+20×</td>
+              </tr>
+              <tr>
+                <td>Unique Call Graphs</td>
+                <td style="text-align:right;">19,442</td>
+                <td style="text-align:right;">39,810</td>
+                <td style="text-align:right;color:var(--green);font-weight:700;">+105%</td>
+              </tr>
+              <tr>
+                <td>R/P Topo Classes</td>
+                <td style="text-align:right;">65</td>
+                <td style="text-align:right;">153</td>
+                <td style="text-align:right;color:var(--green);font-weight:700;">+135%</td>
+              </tr>
+              <tr>
+                <td>Tool Types / Task</td>
+                <td style="text-align:right;">1.71</td>
+                <td style="text-align:right;">3.26</td>
+                <td style="text-align:right;color:var(--green);font-weight:700;">+91%</td>
+              </tr>
+              <tr>
+                <td>Avg OOD (SFT)</td>
+                <td style="text-align:right;">22.51</td>
+                <td style="text-align:right;">32.15</td>
+                <td style="text-align:right;color:var(--green);font-weight:700;">+43%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="diversity-right">
+        <div class="diversity-fig-row">
+          <div class="diversity-fig">
+            <img src="static/images/topology_density_comparison.png" alt="R/P topology density">
+            <span class="diversity-fig-label">(a) R/P topology density</span>
+          </div>
+          <div class="diversity-fig">
+            <img src="static/images/tool_call_freq.png" alt="Tool call frequency">
+            <span class="diversity-fig-label">(b) Tool frequency</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RL training — full width below -->
+    <div class="figure-container reveal" style="margin-top:1.2rem;">
+      <img src="static/images/rl_training.png" alt="RL training dynamics" style="max-width:95%;">
+      <p class="figure-caption"><strong>Figure 5.</strong> RL training dynamics: accuracy, tool calls, unique graphs, and R/P topologies over 100 steps.</p>
+    </div>
+    <div class="takeaway-box reveal">
+      <div class="takeaway-label"><i class="fas fa-lightbulb"></i> Key Takeaways</div>
+      <ul>
+        <li><strong>Massive diversity gains</strong>: DIVE covers 373 tools (vs. 2) and generates 46k unique toolsets — orders-of-magnitude more structural diversity than quantity-scaled baselines.</li>
+        <li><strong>RL discovers novel strategies</strong>: During RL training, unique call-graph structures increase steadily — the model learns new tool-composition patterns beyond SFT demonstrations.</li>
+        <li><strong>Topology shift</strong>: DIVE shifts the R/P topology distribution from retrieval-dominated to a balanced retrieval-processing mix, enabling more complex reasoning chains.</li>
+        <li><strong>Long-tail coverage</strong>: DIVE activates the full 373-tool pool, maintaining meaningful frequency even for rare domain-specific tools.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BIBTEX ===== -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title reveal">BibTeX</h2>
+    <div class="bibtex-section reveal">
+      <button class="bibtex-copy-btn">Copy</button>
+      <div class="bibtex-box">
+<pre class="bibtex-content">@inproceedings{chen2026dive,
+  title={{DIVE}: Scaling Diversity in Agentic Task Synthesis
+         for Generalizable Tool Use},
+  author={},
+  booktitle={},
+  year={2026}
+}</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <p>Template adapted from <a href="https://nerfies.github.io">Nerfies</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/main.js"></script>
+</body>
+</html>

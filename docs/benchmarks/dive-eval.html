@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DIVE-Eval — DIVE Benchmark</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+
+<section class="section">
+  <div class="container">
+
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to DIVE</a>
+
+    <h1 class="subpage-title" style="margin-top:0.8rem;">DIVE-Eval</h1>
+    <div style="margin:0.5rem 0 1rem;">
+      <span class="ood-tag" style="background:var(--primary);font-size:0.75rem;">L1</span>
+      <span style="font-size:0.9rem;color:var(--text-secondary);margin-left:0.3rem;">In-Distribution</span>
+      
+    </div>
+
+    <p class="subpage-desc">800 tasks with disjoint seed concepts but the same 373-tool pool. Each task samples a novel tool subset of 15–50 tools. This evaluates whether the agent can generalize to new seed concepts and toolset combinations within the training distribution.</p>
+
+    <div class="subpage-meta">
+      <div class="meta-item">
+        <span class="meta-label">Tool Pool</span>
+        <span class="meta-value">384 Tools (General + Expert)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Toolset</span>
+        <span class="meta-value">Per-task (15–50)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Protocol</span>
+        <span class="meta-value">OpenAI Function Calling</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Environment</span>
+        <span class="meta-value">Stateless</span>
+      </div>
+    </div>
+
+    <div class="score-chart">
+      <div class="score-chart-title">Performance (Success Rate %)</div>
+      <div class="bar-row">
+        <span class="bar-label">Qwen3-8B (base)</span>
+        <div class="bar-track"><div class="bar-fill base" style="width:28.9%"></div></div>
+        <span class="bar-val">13.0</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">WebExplorer-8B</span>
+        <div class="bar-track"><div class="bar-fill baseline" style="width:42.4%"></div></div>
+        <span class="bar-val">19.1</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">DIVE-8B (SFT)</span>
+        <div class="bar-track"><div class="bar-fill sft" style="width:78.7%"></div></div>
+        <span class="bar-val">35.4</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">DIVE-8B (RL)</span>
+        <div class="bar-track"><div class="bar-fill rl" style="width:94.4%"></div></div>
+        <span class="bar-val">42.5</span>
+      </div>
+
+      <div style="display:flex;gap:1rem;margin-top:0.8rem;flex-wrap:wrap;">
+        <span style="font-size:0.75rem;display:flex;align-items:center;gap:0.3rem;"><span style="width:12px;height:12px;border-radius:3px;background:#cbd5e1;display:inline-block;"></span> Base</span>
+        <span style="font-size:0.75rem;display:flex;align-items:center;gap:0.3rem;"><span style="width:12px;height:12px;border-radius:3px;background:#94a3b8;display:inline-block;"></span> Best 8B Baseline</span>
+        <span style="font-size:0.75rem;display:flex;align-items:center;gap:0.3rem;"><span style="width:12px;height:12px;border-radius:3px;background:#4cc9f0;display:inline-block;"></span> DIVE (SFT)</span>
+        <span style="font-size:0.75rem;display:flex;align-items:center;gap:0.3rem;"><span style="width:12px;height:12px;border-radius:3px;background:#4361ee;display:inline-block;"></span> DIVE (RL)</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>

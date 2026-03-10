@@ -1,0 +1,41 @@
+# API Keys
+api_keys:
+  anthropic_api_key: your-anthropic-api-key  # Anthropic API key (pipeline LLM global default)
+  serper_api_key: your-serper-api-key        # Google search via Serper
+  jina_api_key: your-jina-api-key            # Web content extraction via Jina Reader
+  browse_llm_api_key: your-browse-llm-key    # LLM for browse tool Q&A (OpenAI-compatible)
+  browse_llm_base_url: https://api.deepseek.com  # Browse LLM endpoint
+  browse_llm_model: deepseek-chat            # Browse LLM model name
+  tushare_token: your-tushare-token          # Financial data via Tushare
+  # Optional API keys (services work without them but with lower rate limits)
+  semantic_scholar_api_key: ""               # (optional) Semantic Scholar - higher rate limits
+  ncbi_api_key: ""                           # (optional) NCBI Entrez - 10 req/s vs 3 req/s
+  ncbi_email: ""                             # (optional) NCBI Entrez - recommended by NCBI
+
+# Pipeline Config
+pipeline:
+  domain: medical          # Tool domain: medical / biological / academic / financial
+  count: 100               # Total number of tasks to generate
+  workers: 4               # Parallel threads
+  batch_size: 20           # Tasks per batch
+  include_general: true    # Include general tools (search/browse/code)
+  base_dir: output         # Output root directory
+  delay_strategy: progressive  # API rate limit strategy: none / progressive / random
+
+  # Synthesizer LLM
+  synthesizer_api_key: your-api-key              # API key for synthesizer
+  synthesizer_base_url: https://api.anthropic.com # API endpoint for synthesizer
+  synthesizer_model: claude-sonnet-4-20250514     # Model name
+  synthesizer_provider: anthropic                 # anthropic or openai_compatible
+
+  # Solver LLM
+  solver_api_key: your-api-key              # API key for solver
+  solver_base_url: https://api.anthropic.com # API endpoint for solver
+  solver_model: claude-sonnet-4-20250514     # Model name
+  solver_provider: anthropic                 # anthropic or openai_compatible
+
+  # Verifier LLM
+  verifier_api_key: your-api-key              # API key for verifier
+  verifier_base_url: https://api.anthropic.com # API endpoint for verifier
+  verifier_model: claude-sonnet-4-20250514     # Model name
+  verifier_provider: anthropic                 # anthropic or openai_compatible

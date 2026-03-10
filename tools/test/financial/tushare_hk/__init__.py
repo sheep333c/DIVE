@@ -1,0 +1,3 @@
+"""
+Tushare Hk tools tests
+"""

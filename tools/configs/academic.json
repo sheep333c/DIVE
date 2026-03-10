@@ -1,0 +1,2824 @@
+{
+  "semantic_scholar": [
+    {
+      "id": "academic.semantic_scholar.paper_search",
+      "name": "semantic_scholar_paper_search",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for academic papers using Semantic Scholar API with relevance ranking. Supports various filters including publication types, dates, venues, and fields of study.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_paper_search:SemanticScholarPaperSearchTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/paper/search",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Paper-Data/operation/get_graph_paper_relevance_search"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Text query that will be matched against paper's title and abstract. All terms are stemmed in English. By default all terms in the query must be present in the paper. Example: 'machine learning' or 'covid vaccination'"
+          },
+          "fields": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return. The paperId field is always returned. If omitted, only paperId and title will be returned. Use period (.) for subfields like 'authors.name', 'citations.title'. Example: 'title,abstract,year,authors' or 'title,embedding.specter_v2'"
+          },
+          "publicationTypes": {
+            "type": "string",
+            "description": "Filter by publication types. Use comma-separated list. Options: Review, JournalArticle, CaseReport, ClinicalTrial, Conference, Dataset, Editorial, LettersAndComments, MetaAnalysis, News, Study, Book, BookSection. Example: 'Review,JournalArticle'"
+          },
+          "openAccessPdf": {
+            "type": "string",
+            "description": "Filter for papers with public PDF. This parameter does not accept any values. Just include the parameter name to enable filtering."
+          },
+          "minCitationCount": {
+            "type": "string",
+            "description": "Minimum number of citations. Example: '200'"
+          },
+          "publicationDateOrYear": {
+            "type": "string",
+            "description": "Publication date range in YYYY-MM-DD format. Use <startDate>:<endDate> format. Each term is optional. Examples: '2019-03-05', '2019-03', '2019', '2016-03-05:2020-06-06', '1981-08-25:', ':2015-01', '2015:2020'"
+          },
+          "year": {
+            "type": "string",
+            "description": "Publication year range. Examples: '2019', '2016-2020', '2010-', '-2015'"
+          },
+          "venue": {
+            "type": "string",
+            "description": "Publication venues, comma-separated list. Can use ISO4 abbreviations. Examples: 'Nature', 'New England Journal of Medicine', 'Radiology', 'N. Engl. J. Med.'"
+          },
+          "fieldsOfStudy": {
+            "type": "string",
+            "description": "Fields of study, comma-separated list. Options: Computer Science, Medicine, Chemistry, Biology, Materials Science, Physics, Geology, Psychology, Art, History, Geography, Sociology, Business, Political Science, Economics, Philosophy, Mathematics, Engineering, Environmental Science, Agricultural and Food Sciences, Education, Law, Linguistics. Example: 'Physics,Mathematics'"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting position for pagination (0-based)"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 100,
+            "description": "Maximum number of results to return (max 100)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "total",
+          "offset",
+          "data"
+        ],
+        "properties": {
+          "total": {
+            "type": "string",
+            "description": "Approximate number of matching search results"
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Starting position for this batch"
+          },
+          "next": {
+            "type": "integer",
+            "description": "Starting position of the next batch (absent if no more data)"
+          },
+          "data": {
+            "type": "array",
+            "description": "List of matching papers",
+            "items": {
+              "type": "object",
+              "description": "Paper object with requested fields"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.paper_bulk_search",
+      "name": "semantic_scholar_paper_bulk_search",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Bulk retrieval of basic paper data without search relevance. Supports boolean logic queries and various filters.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_paper_bulk_search:SemanticScholarPaperBulkSearchTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/paper/search/bulk",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Paper-Data/operation/get_graph_paper_bulk_search"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Text query with boolean logic support. Supports + for AND, | for OR, - for negation, quotes for phrases, * for prefix matching, ~N for edit distance, and parentheses for precedence. Example: 'machine learning' or 'fish +ladder' or '(fish ladder) | outflow'"
+          },
+          "token": {
+            "type": "string",
+            "description": "Continuation token for pagination. Provided when original query returns, used to fetch next batch of papers."
+          },
+          "fields": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return. The paperId field is always returned. Example: 'title,abstract,year,authors'"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sort results by field:order. Options: paperId, publicationDate, citationCount. Default: paperId:asc. Example: 'publicationDate:asc' or 'citationCount:desc'"
+          },
+          "publicationTypes": {
+            "type": "string",
+            "description": "Filter by publication types. Use comma-separated list. Options: Review, JournalArticle, CaseReport, ClinicalTrial, Conference, Dataset, Editorial, LettersAndComments, MetaAnalysis, News, Study, Book, BookSection. Example: 'Review,JournalArticle'"
+          },
+          "openAccessPdf": {
+            "type": "string",
+            "description": "Filter for papers with public PDF. This parameter does not accept any values. Just include the parameter name to enable filtering."
+          },
+          "minCitationCount": {
+            "type": "string",
+            "description": "Minimum number of citations. Example: '200'"
+          },
+          "publicationDateOrYear": {
+            "type": "string",
+            "description": "Publication date range in YYYY-MM-DD format. Use <startDate>:<endDate> format. Examples: '2019-03-05', '2019-03', '2019', '2016-03-05:2020-06-06'"
+          },
+          "year": {
+            "type": "string",
+            "description": "Publication year range. Examples: '2019', '2016-2020', '2010-', '-2015'"
+          },
+          "venue": {
+            "type": "string",
+            "description": "Publication venues, comma-separated list. Can use ISO4 abbreviations. Examples: 'Nature', 'New England Journal of Medicine', 'Radiology'"
+          },
+          "fieldsOfStudy": {
+            "type": "string",
+            "description": "Fields of study, comma-separated list. Options: Computer Science, Medicine, Chemistry, Biology, Materials Science, Physics, Geology, Psychology, Art, History, Geography, Sociology, Business, Political Science, Economics, Philosophy, Mathematics, Engineering, Environmental Science, Agricultural and Food Sciences, Education, Law, Linguistics. Example: 'Physics,Mathematics'"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "total",
+          "data"
+        ],
+        "properties": {
+          "total": {
+            "type": "string",
+            "description": "Approximate number of matching search results"
+          },
+          "token": {
+            "type": "string",
+            "description": "Continuation token for next page (present only when more results available)"
+          },
+          "data": {
+            "type": "array",
+            "description": "List of matching papers",
+            "items": {
+              "type": "object",
+              "description": "Paper object with requested fields"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.author_papers",
+      "name": "semantic_scholar_author_papers",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Details about an author's papers. Fetch the papers of an author in batches. Only retrieves the most recent 10,000 citations/references for papers belonging to the batch.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_author_papers:SemanticScholarAuthorPapersTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/author/{author_id}/papers",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Author-Data/operation/get_graph_author_papers"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "author_id"
+        ],
+        "properties": {
+          "author_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Semantic Scholar author ID. Example: '1741101'"
+          },
+          "fields": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return. The paperId field is always returned. If omitted, only paperId and title will be returned. Use period (.) for subfields like 'authors.name', 'citations.title'. Example: 'title,abstract,year,authors' or 'url,year,authors'"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting position for pagination (0-based)"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100,
+            "description": "Maximum number of results to return (max 1000)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "offset",
+          "data"
+        ],
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "description": "Starting position for this batch"
+          },
+          "next": {
+            "type": "integer",
+            "description": "Starting position of the next batch (absent if no more data)"
+          },
+          "data": {
+            "type": "array",
+            "description": "List of papers by the author",
+            "items": {
+              "type": "object",
+              "description": "Paper object with requested fields"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.author_search",
+      "name": "semantic_scholar_author_search",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for authors by name using Semantic Scholar API.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_author_search:SemanticScholarAuthorSearchTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/author/search",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Author-Data/operation/get_graph_get_author_search"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search query string for author names. Example: 'adam smith'"
+          },
+          "fields": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return. The authorId field is always returned. If omitted, only authorId and name will be returned. Use period (.) for subfields like 'papers.title', 'papers.year'. Example: 'name,url,papers.title,papers.year'"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting position for pagination (0-based)"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100,
+            "description": "Maximum number of results to return (max 1000)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "total",
+          "offset",
+          "data"
+        ],
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Total number of matching authors"
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Starting position for this batch"
+          },
+          "next": {
+            "type": "integer",
+            "description": "Starting position of the next batch (absent if no more data)"
+          },
+          "data": {
+            "type": "array",
+            "description": "List of matching authors",
+            "items": {
+              "type": "object",
+              "description": "Author object with requested fields"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.get_author",
+      "name": "semantic_scholar_get_author",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Details about an author using Semantic Scholar API.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_get_author:SemanticScholarGetAuthorTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/author/{author_id}",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Author-Data/operation/get_graph_get_author"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "author_id"
+        ],
+        "properties": {
+          "author_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Semantic Scholar author ID. Example: '1741101'"
+          },
+          "fields": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return. The authorId field is always returned. If omitted, only authorId and name will be returned. Use period (.) for subfields like 'papers.title', 'papers.year'. Example: 'name,url,papers.title,papers.year'"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "Author object with requested fields"
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.get_paper",
+      "name": "semantic_scholar_get_paper",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Details about a paper using Semantic Scholar API.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_get_paper:SemanticScholarGetPaperTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/paper/{paper_id}",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Paper-Data/operation/get_graph_get_paper"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "paper_id"
+        ],
+        "properties": {
+          "paper_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Semantic Scholar paper ID. Example: '649def34f8be52c8b66281af98ae884c09aef38b'"
+          },
+          "fields": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return. The paperId field is always returned. If omitted, only paperId and title will be returned. Use period (.) for subfields like 'authors.name', 'citations.title'. Example: 'title,abstract,year,authors'"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "Paper object with requested fields"
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.paper_authors",
+      "name": "semantic_scholar_paper_authors",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Details about a paper's authors using Semantic Scholar API.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_paper_authors:SemanticScholarPaperAuthorsTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/paper/{paper_id}/authors",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Paper-Data/operation/get_graph_get_paper_authors"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "paper_id"
+        ],
+        "properties": {
+          "paper_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Semantic Scholar paper ID. Example: '649def34f8be52c8b66281af98ae884c09aef38b'"
+          },
+          "fields": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return. The authorId field is always returned. If omitted, only authorId and name will be returned. Use period (.) for subfields like 'papers.title', 'papers.year'. Example: 'name,affiliations,papers.title'"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting position for pagination (0-based)"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100,
+            "description": "Maximum number of results to return (max 1000)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "offset",
+          "data"
+        ],
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "description": "Starting position for this batch"
+          },
+          "next": {
+            "type": "integer",
+            "description": "Starting position of the next batch (absent if no more data)"
+          },
+          "data": {
+            "type": "array",
+            "description": "List of authors of the paper",
+            "items": {
+              "type": "object",
+              "description": "Author object with requested fields"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.paper_citations",
+      "name": "semantic_scholar_paper_citations",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Details about a paper's citations using Semantic Scholar API. Fetch details about the papers that cite this paper.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_paper_citations:SemanticScholarPaperCitationsTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/paper/{paper_id}/citations",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Paper-Data/operation/get_graph_get_paper_citations"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "paper_id"
+        ],
+        "properties": {
+          "paper_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Semantic Scholar paper ID. Example: '649def34f8be52c8b66281af98ae884c09aef38b'"
+          },
+          "fields": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return. Example: 'contexts,intents,isInfluential,abstract,authors'"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting position for pagination (0-based)"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100,
+            "description": "Maximum number of results to return (max 1000)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "offset",
+          "data"
+        ],
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "description": "Starting position for this batch"
+          },
+          "next": {
+            "type": "integer",
+            "description": "Starting position of the next batch (absent if no more data)"
+          },
+          "data": {
+            "type": "array",
+            "description": "List of citations of the paper",
+            "items": {
+              "type": "object",
+              "description": "Citation object with requested fields"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.paper_references",
+      "name": "semantic_scholar_paper_references",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Details about a paper's references using Semantic Scholar API. Fetch details about the papers cited by this paper.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_paper_references:SemanticScholarPaperReferencesTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/paper/{paper_id}/references",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Paper-Data/operation/get_graph_get_paper_references"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "paper_id"
+        ],
+        "properties": {
+          "paper_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Semantic Scholar paper ID. Example: '649def34f8be52c8b66281af98ae884c09aef38b'"
+          },
+          "fields": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return. Example: 'contexts,intents,isInfluential,abstract,authors'"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting position for pagination (0-based)"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100,
+            "description": "Maximum number of results to return (max 1000)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "offset",
+          "data"
+        ],
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "description": "Starting position for this batch"
+          },
+          "next": {
+            "type": "integer",
+            "description": "Starting position of the next batch (absent if no more data)"
+          },
+          "data": {
+            "type": "array",
+            "description": "List of references of the paper",
+            "items": {
+              "type": "object",
+              "description": "Reference object with requested fields"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.paper_autocomplete",
+      "name": "semantic_scholar_paper_autocomplete",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Suggest paper query completions using Semantic Scholar API.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_paper_autocomplete:SemanticScholarPaperAutocompleteTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/paper/autocomplete",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Paper-Data/operation/get_graph_get_paper_autocomplete"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Partial query string for paper title completion. Example: 'semanti'"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "array",
+        "description": "List of paper suggestions",
+        "items": {
+          "type": "object",
+          "description": "Paper suggestion object"
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.paper_title_search",
+      "name": "semantic_scholar_paper_title_search",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Paper title search using Semantic Scholar API. Retrieves a single paper based on closest title match to given query.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_paper_title_search:SemanticScholarPaperTitleSearchTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/paper/search/match",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Paper-Data/operation/get_graph_paper_title_search"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Title query string for paper matching. Example: 'Construction of the Literature Graph in Semantic Scholar'"
+          },
+          "fields": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return. The paperId field is always returned. If omitted, only paperId and title will be returned. Use period (.) for subfields like 'authors.name', 'citations.title'. Example: 'title,abstract,year,authors'"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "Paper object with requested fields and matchScore"
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.snippet_search",
+      "name": "semantic_scholar_snippet_search",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Text snippet search using Semantic Scholar API. Return text snippets that most closely match the query.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_snippet_search:SemanticScholarSnippetSearchTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/snippet/search",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Snippet-Text/operation/get_snippet_search"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Text query string for snippet search. Example: 'The literature graph is a property graph with directed edges'"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 10,
+            "description": "Maximum number of results to return (max 1000)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "array",
+        "description": "List of text snippets",
+        "items": {
+          "type": "object",
+          "description": "Snippet object with text, snippetKind, section, annotation data, and score"
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.author_batch",
+      "name": "semantic_scholar_author_batch",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Get details for multiple authors at once using Semantic Scholar API.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_author_batch:SemanticScholarAuthorBatchTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/author/batch",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Author-Data/operation/post_graph_get_authors"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 1000,
+            "description": "Array of author IDs to retrieve. Example: ['1741101', '1780531', '48323507']"
+          },
+          "fields": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return. The authorId field is always returned. If omitted, only authorId and name will be returned. Use period (.) for subfields like 'papers.title', 'papers.year'. Example: 'name,affiliations,papers.title'"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "array",
+        "description": "List of authors with requested fields",
+        "items": {
+          "type": "object",
+          "description": "Author object with requested fields"
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.paper_batch",
+      "name": "semantic_scholar_paper_batch",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Get details for multiple papers at once using Semantic Scholar API.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_paper_batch:SemanticScholarPaperBatchTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/graph/v1/paper/batch",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Paper-Data/operation/post_graph_get_papers"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 500,
+            "description": "Array of paper IDs to retrieve. Example: ['649def34f8be52c8b66281af98ae884c09aef38b', 'ARXIV:2106.15928']"
+          },
+          "fields": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return. The paperId field is always returned. If omitted, only paperId and title will be returned. Use period (.) for subfields like 'authors.name', 'citations.title'. Example: 'title,abstract,year,authors'"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "array",
+        "description": "List of papers with requested fields",
+        "items": {
+          "type": "object",
+          "description": "Paper object with requested fields"
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.paper_recommendations",
+      "name": "semantic_scholar_paper_recommendations",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Get paper recommendations using Semantic Scholar API.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_paper_recommendations:SemanticScholarPaperRecommendationsTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/recommendations/v1/papers/forpaper/{paper_id}",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Recommendations/operation/get_recommendations_papers_forpaper"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "paper_id"
+        ],
+        "properties": {
+          "paper_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Semantic Scholar paper ID. Example: '649def34f8be52c8b66281af98ae884c09aef38b'"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500,
+            "default": 10,
+            "description": "Maximum number of recommendations to return (max 500)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "array",
+        "description": "List of recommended papers",
+        "items": {
+          "type": "object",
+          "description": "Recommended paper object"
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.recommend_papers",
+      "name": "semantic_scholar_recommend_papers",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Get paper recommendations using Semantic Scholar API.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_recommend_papers:SemanticScholarRecommendPapersTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/recommendations/v1/papers/forpaper/{paper_id}",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Recommendations/operation/get_recommendations_papers_forpaper"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "paper_id"
+        ],
+        "properties": {
+          "paper_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Semantic Scholar paper ID. Example: '649def34f8be52c8b66281af98ae884c09aef38b'"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500,
+            "default": 10,
+            "description": "Maximum number of recommendations to return (max 500)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "array",
+        "description": "List of recommended papers",
+        "items": {
+          "type": "object",
+          "description": "Recommended paper object"
+        }
+      }
+    },
+    {
+      "id": "academic.semantic_scholar.release_list",
+      "name": "semantic_scholar_release_list",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Get release list using Semantic Scholar API.",
+      "module": "tools.academic.semantic_scholar.semantic_scholar_release_list:SemanticScholarReleaseListTool",
+      "auth": {
+        "type": "api_key",
+        "header": "x-api-key",
+        "description": "Semantic Scholar API key for higher rate limits"
+      },
+      "meta": {
+        "upstream_api": "https://api.semanticscholar.org/datasets/v1/release",
+        "source_urls": [
+          "https://api.semanticscholar.org/api-docs/#tag/Datasets/operation/get_datasets_release"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "array",
+        "description": "List of releases",
+        "items": {
+          "type": "object",
+          "description": "Release information"
+        }
+      }
+    }
+  ],
+  "arxiv": [
+    {
+      "id": "academic.arxiv.arxiv_search_papers",
+      "name": "arxiv_search_papers",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for academic papers on arXiv using keywords, with support for pagination and sorting.",
+      "module": "tools.academic.arxiv.arxiv_search_papers:ArxivSearchPapersTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "http://export.arxiv.org/api/query",
+        "source_urls": [
+          "https://info.arxiv.org/help/api/user-manual.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "search_query"
+        ],
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search query string. Supports field prefixes like 'ti:' (title), 'au:' (author), 'abs:' (abstract), 'cat:' (category), etc."
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting index for pagination (0-based)"
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000,
+            "default": 10,
+            "description": "Maximum number of results to return"
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "lastUpdatedDate",
+              "submittedDate"
+            ],
+            "default": "relevance",
+            "description": "Sort field for results"
+          },
+          "sortOrder": {
+            "type": "string",
+            "enum": [
+              "ascending",
+              "descending"
+            ],
+            "default": "descending",
+            "description": "Sort order for results"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the request was successful"
+          },
+          "data": {
+            "type": "string",
+            "description": "Raw XML response from ArXiv API"
+          }
+        }
+      }
+    },
+    {
+      "id": "academic.arxiv.arxiv_get_papers_by_ids",
+      "name": "arxiv_get_papers_by_ids",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Retrieve specific papers from arXiv by their IDs.",
+      "module": "tools.academic.arxiv.arxiv_get_papers_by_ids:ArxivGetPapersByIdsTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "http://export.arxiv.org/api/query",
+        "source_urls": [
+          "https://info.arxiv.org/help/api/user-manual.html#3111-search_query-and-id_list-logic"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "id_list"
+        ],
+        "properties": {
+          "id_list": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Comma-separated list of arXiv paper IDs to retrieve (e.g., '1234.5678,quant-ph/0123456')"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the request was successful"
+          },
+          "data": {
+            "type": "string",
+            "description": "Raw XML response from ArXiv API"
+          }
+        }
+      }
+    },
+    {
+      "id": "academic.arxiv.arxiv_search_by_author",
+      "name": "arxiv_search_by_author",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for papers by a specific author on arXiv.",
+      "module": "tools.academic.arxiv.arxiv_search_by_author:ArxivSearchByAuthorTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "http://export.arxiv.org/api/query",
+        "source_urls": [
+          "https://info.arxiv.org/help/api/user-manual.html#query_details"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "search_query"
+        ],
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Author search query. Use format 'au:author_name' for author search (e.g., 'au:del_maestro')"
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting index for pagination (0-based)"
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000,
+            "default": 10,
+            "description": "Maximum number of results to return"
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "lastUpdatedDate",
+              "submittedDate"
+            ],
+            "default": "lastUpdatedDate",
+            "description": "Sort field for results"
+          },
+          "sortOrder": {
+            "type": "string",
+            "enum": [
+              "ascending",
+              "descending"
+            ],
+            "default": "descending",
+            "description": "Sort order for results"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the request was successful"
+          },
+          "data": {
+            "type": "string",
+            "description": "Raw XML response from ArXiv API"
+          }
+        }
+      }
+    },
+    {
+      "id": "academic.arxiv.arxiv_search_by_category",
+      "name": "arxiv_search_by_category",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for papers in a specific category on arXiv.",
+      "module": "tools.academic.arxiv.arxiv_search_by_category:ArxivSearchByCategoryTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "http://export.arxiv.org/api/query",
+        "source_urls": [
+          "https://info.arxiv.org/help/api/user-manual.html#subject-classifications"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "search_query"
+        ],
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Category search query. Use format 'cat:category_code' for category search (e.g., 'cat:cs.AI', 'cat:math.CO')"
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting index for pagination (0-based)"
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000,
+            "default": 10,
+            "description": "Maximum number of results to return"
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "lastUpdatedDate",
+              "submittedDate"
+            ],
+            "default": "lastUpdatedDate",
+            "description": "Sort field for results"
+          },
+          "sortOrder": {
+            "type": "string",
+            "enum": [
+              "ascending",
+              "descending"
+            ],
+            "default": "descending",
+            "description": "Sort order for results"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the request was successful"
+          },
+          "data": {
+            "type": "string",
+            "description": "Raw XML response from ArXiv API"
+          }
+        }
+      }
+    },
+    {
+      "id": "academic.arxiv.arxiv_search_by_date_range",
+      "name": "arxiv_search_by_date_range",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for papers submitted within a specific date range on arXiv.",
+      "module": "tools.academic.arxiv.arxiv_search_by_date_range:ArxivSearchByDateRangeTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "http://export.arxiv.org/api/query",
+        "source_urls": [
+          "https://info.arxiv.org/help/api/user-manual.html#date-range-searching"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "search_query"
+        ],
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Date range search query. Use format 'submittedDate:[YYYYMMDDHHMM TO YYYYMMDDHHMM]' (e.g., 'submittedDate:[202301010600 TO 202401010600]'). Can combine with other terms using AND/OR."
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting index for pagination (0-based)"
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000,
+            "default": 10,
+            "description": "Maximum number of results to return"
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "lastUpdatedDate",
+              "submittedDate"
+            ],
+            "default": "submittedDate",
+            "description": "Sort field for results"
+          },
+          "sortOrder": {
+            "type": "string",
+            "enum": [
+              "ascending",
+              "descending"
+            ],
+            "default": "descending",
+            "description": "Sort order for results"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the request was successful"
+          },
+          "data": {
+            "type": "string",
+            "description": "Raw XML response from ArXiv API"
+          }
+        }
+      }
+    },
+    {
+      "id": "academic.arxiv.arxiv_advanced_search",
+      "name": "arxiv_advanced_search",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Perform advanced search queries on arXiv with complex boolean logic and field-specific queries.",
+      "module": "tools.academic.arxiv.arxiv_advanced_search:ArxivAdvancedSearchTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "http://export.arxiv.org/api/query",
+        "source_urls": [
+          "https://info.arxiv.org/help/api/user-manual.html#advanced-queries"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "search_query"
+        ],
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Advanced search query with boolean operators (AND, OR, ANDNOT), field prefixes (ti:, au:, abs:, cat:, etc.), quotes for exact phrases, wildcards (*), and parentheses for grouping"
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting index for pagination (0-based)"
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000,
+            "default": 10,
+            "description": "Maximum number of results to return"
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "lastUpdatedDate",
+              "submittedDate"
+            ],
+            "default": "relevance",
+            "description": "Sort field for results"
+          },
+          "sortOrder": {
+            "type": "string",
+            "enum": [
+              "ascending",
+              "descending"
+            ],
+            "default": "descending",
+            "description": "Sort order for results"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the request was successful"
+          },
+          "data": {
+            "type": "string",
+            "description": "Raw XML response from ArXiv API"
+          }
+        }
+      }
+    }
+  ],
+  "openalex": [
+    {
+      "id": "academic.openalex.openalex_search_works",
+      "name": "openalex_search_works",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for academic works on OpenAlex including journal articles, books, datasets, and theses.",
+      "module": "tools.academic.openalex.openalex_search_works:OpenalexSearchWorksTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.openalex.org/works",
+        "source_urls": [
+          "https://docs.openalex.org/api-entities/works"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Search query string for works (searches titles, abstracts, and full text)"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filter criteria (e.g., 'publication_year:>2020', 'open_access.is_oa:true')"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sort order (e.g., 'cited_by_count:desc', 'publication_date:desc')"
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 25,
+            "description": "Number of results per page"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number for pagination"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "JSON response containing works data"
+      }
+    },
+    {
+      "id": "academic.openalex.openalex_get_work",
+      "name": "openalex_get_work",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Retrieve a specific work from OpenAlex by ID.",
+      "module": "tools.academic.openalex.openalex_get_work:OpenalexGetWorkTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.openalex.org/works",
+        "source_urls": [
+          "https://docs.openalex.org/api-entities/works/get-a-single-work"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "work_id"
+        ],
+        "properties": {
+          "work_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "OpenAlex work ID (e.g., 'W2741809807' or full URL)"
+          },
+          "select": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "JSON response containing work object"
+      }
+    },
+    {
+      "id": "academic.openalex.openalex_search_authors",
+      "name": "openalex_search_authors",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for academic authors and researchers on OpenAlex.",
+      "module": "tools.academic.openalex.openalex_search_authors:OpenalexSearchAuthorsTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.openalex.org/authors",
+        "source_urls": [
+          "https://docs.openalex.org/api-entities/authors"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Search query string for author names"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filter criteria (e.g., 'has_orcid:true', 'affiliations.institution.country_code:us')"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sort order (e.g., 'cited_by_count:desc', 'works_count:desc')"
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 25,
+            "description": "Number of results per page"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number for pagination"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "JSON response containing authors data"
+      }
+    },
+    {
+      "id": "academic.openalex.openalex_get_author",
+      "name": "openalex_get_author",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Retrieve a specific author from OpenAlex by ID.",
+      "module": "tools.academic.openalex.openalex_get_author:OpenalexGetAuthorTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.openalex.org/authors",
+        "source_urls": [
+          "https://docs.openalex.org/api-entities/authors/get-a-single-author"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "author_id"
+        ],
+        "properties": {
+          "author_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "OpenAlex author ID (e.g., 'A2208157607' or full URL)"
+          },
+          "select": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "JSON response containing author object"
+      }
+    },
+    {
+      "id": "academic.openalex.openalex_search_institutions",
+      "name": "openalex_search_institutions",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for academic institutions and organizations on OpenAlex.",
+      "module": "tools.academic.openalex.openalex_search_institutions:OpenalexSearchInstitutionsTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.openalex.org/institutions",
+        "source_urls": [
+          "https://docs.openalex.org/api-entities/institutions"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Search query string for institution names"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filter criteria (e.g., 'country_code:us', 'type:education')"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sort order (e.g., 'works_count:desc', 'cited_by_count:desc')"
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 25,
+            "description": "Number of results per page"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number for pagination"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "JSON response containing institutions data"
+      }
+    },
+    {
+      "id": "academic.openalex.openalex_get_institution",
+      "name": "openalex_get_institution",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Retrieve a specific institution from OpenAlex by ID.",
+      "module": "tools.academic.openalex.openalex_get_institution:OpenalexGetInstitutionTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.openalex.org/institutions",
+        "source_urls": [
+          "https://docs.openalex.org/api-entities/institutions/get-a-single-institution"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "institution_id"
+        ],
+        "properties": {
+          "institution_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "OpenAlex institution ID (e.g., 'I27837315' or full URL)"
+          },
+          "select": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "JSON response containing institution object"
+      }
+    },
+    {
+      "id": "academic.openalex.openalex_search_sources",
+      "name": "openalex_search_sources",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for academic journals, repositories, and other sources on OpenAlex.",
+      "module": "tools.academic.openalex.openalex_search_sources:OpenalexSearchSourcesTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.openalex.org/sources",
+        "source_urls": [
+          "https://docs.openalex.org/api-entities/sources"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Search query string for source names"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filter criteria (e.g., 'type:journal', 'has_issn:true')"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sort order (e.g., 'cited_by_count:desc', 'works_count:desc')"
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 25,
+            "description": "Number of results per page"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number for pagination"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "JSON response containing sources data"
+      }
+    },
+    {
+      "id": "academic.openalex.openalex_get_source",
+      "name": "openalex_get_source",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Retrieve a specific source from OpenAlex by ID.",
+      "module": "tools.academic.openalex.openalex_get_source:OpenalexGetSourceTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.openalex.org/sources",
+        "source_urls": [
+          "https://docs.openalex.org/api-entities/sources/get-a-single-source"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "source_id"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "OpenAlex source ID (e.g., 'S137773608' or full URL)"
+          },
+          "select": {
+            "type": "string",
+            "description": "Comma-separated list of fields to return"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "JSON response containing source object"
+      }
+    },
+    {
+      "id": "academic.openalex.openalex_search_publishers",
+      "name": "openalex_search_publishers",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for academic publishers and publishing organizations on OpenAlex.",
+      "module": "tools.academic.openalex.openalex_search_publishers:OpenalexSearchPublishersTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.openalex.org/publishers",
+        "source_urls": [
+          "https://docs.openalex.org/api-entities/publishers"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Search query string for publisher names"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filter criteria (e.g., 'country_codes:us', 'sources_count:>100')"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sort order (e.g., 'sources_count:desc', 'works_count:desc')"
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 25,
+            "description": "Number of results per page"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number for pagination"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "JSON response containing publishers data"
+      }
+    },
+    {
+      "id": "academic.openalex.openalex_search_topics",
+      "name": "openalex_search_topics",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for academic topics and research areas on OpenAlex.",
+      "module": "tools.academic.openalex.openalex_search_topics:OpenalexSearchTopicsTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.openalex.org/topics",
+        "source_urls": [
+          "https://docs.openalex.org/api-entities/topics"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Search query string for topic names"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filter criteria (e.g., 'domain.id:1', 'works_count:>1000')"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sort order (e.g., 'works_count:desc', 'cited_by_count:desc')"
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 25,
+            "description": "Number of results per page"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number for pagination"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "JSON response containing topics data"
+      }
+    },
+    {
+      "id": "academic.openalex.openalex_search_funders",
+      "name": "openalex_search_funders",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for research funding organizations and agencies on OpenAlex.",
+      "module": "tools.academic.openalex.openalex_search_funders:OpenalexSearchFundersTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.openalex.org/funders",
+        "source_urls": [
+          "https://docs.openalex.org/api-entities/funders"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Search query string for funder names"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filter criteria (e.g., 'country_code:us', 'grants_count:>100')"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sort order (e.g., 'works_count:desc', 'grants_count:desc')"
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 25,
+            "description": "Number of results per page"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number for pagination"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "JSON response containing funders data"
+      }
+    },
+    {
+      "id": "academic.openalex.openalex_analyze_text",
+      "name": "openalex_analyze_text",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Analyze text using OpenAlex's aboutness endpoint to identify related topics and concepts. Note: 'text' parameter is automatically mapped to 'title' for API compatibility.",
+      "module": "tools.academic.openalex.openalex_analyze_text:OpenalexAnalyzeTextTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.openalex.org/text",
+        "source_urls": [
+          "https://docs.openalex.org/api-entities/aboutness-endpoint-text"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 2000,
+            "description": "Title text to analyze (20-2000 characters)"
+          },
+          "abstract": {
+            "type": "string",
+            "description": "Optional abstract text to analyze alongside the title"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "JSON response containing topics, keywords, and confidence scores"
+      }
+    }
+  ],
+  "crossref": [
+    {
+      "id": "academic.crossref.crossref_get_work",
+      "name": "crossref_get_work",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Retrieve specific academic work from Crossref by DOI.",
+      "module": "tools.academic.crossref.crossref_get_work:CrossrefGetWorkTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/works/{doi}",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "doi"
+        ],
+        "properties": {
+          "doi": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The DOI identifier of the work to retrieve"
+          },
+          "mailto": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing work metadata from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_members",
+      "name": "crossref_members",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Search for Crossref members (publishers and organizations) with support for queries, filters, and pagination.",
+      "module": "tools.academic.crossref.crossref_members:CrossrefMembersTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/members",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "General search query string for member names"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Comma-separated filter expressions"
+          },
+          "rows": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 20,
+            "description": "Number of results to return"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Starting index for pagination"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Deep paging cursor for large result sets"
+          },
+          "mailto": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing member search results from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_get_member",
+      "name": "crossref_get_member",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Retrieve specific member information from Crossref by ID.",
+      "module": "tools.academic.crossref.crossref_get_member:CrossrefGetMemberTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/members/{id}",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The identifier of the member to retrieve"
+          },
+          "mailto": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing member metadata from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_member_works",
+      "name": "crossref_member_works",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Returns list of works associated with a Crossref member (deposited by a Crossref member) with {id}.",
+      "module": "tools.academic.crossref.crossref_member_works:CrossrefMemberWorksTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/members/{id}/works",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The identifier of the member"
+          },
+          "query": {
+            "type": "string",
+            "description": "General search query string"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Comma-separated filter expressions"
+          },
+          "facet": {
+            "type": "string",
+            "description": "Facet fields for aggregation"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sort field"
+          },
+          "order": {
+            "type": "string",
+            "pattern": "(asc|desc)",
+            "description": "Sort order"
+          },
+          "rows": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Number of results to return"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Starting index for pagination"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Deep paging cursor for large result sets"
+          },
+          "select": {
+            "type": "string",
+            "pattern": "^\\w+(,\\w+)*$",
+            "description": "Comma-separated list of fields to select"
+          },
+          "sample": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Return N randomly sampled results"
+          },
+          "mailto": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,6}$",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing works from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_journals",
+      "name": "crossref_journals",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Return a list of journals in the Crossref database.",
+      "module": "tools.academic.crossref.crossref_journals:CrossrefJournalsTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/journals",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "General search query string for journal names"
+          },
+          "rows": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Number of results to return"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Starting index for pagination"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Deep paging cursor for large result sets"
+          },
+          "mailto": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,6}$",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing journal list from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_get_journal",
+      "name": "crossref_get_journal",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Returns information about a journal with the given ISSN.",
+      "module": "tools.academic.crossref.crossref_get_journal:CrossrefGetJournalTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/journals/{issn}",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "issn"
+        ],
+        "properties": {
+          "issn": {
+            "type": "string",
+            "description": "The ISSN identifier associated with the journal"
+          },
+          "mailto": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,6}$",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing journal metadata from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_journal_works",
+      "name": "crossref_journal_works",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Returns list of works associated with specified {issn}.",
+      "module": "tools.academic.crossref.crossref_journal_works:CrossrefJournalWorksTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/journals/{issn}/works",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "issn"
+        ],
+        "properties": {
+          "issn": {
+            "type": "string",
+            "description": "The ISSN identifier associated with the journal"
+          },
+          "query": {
+            "type": "string",
+            "description": "General search query string"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Comma-separated filter expressions"
+          },
+          "facet": {
+            "type": "string",
+            "description": "Facet fields for aggregation"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sort field"
+          },
+          "order": {
+            "type": "string",
+            "pattern": "(asc|desc)",
+            "description": "Sort order"
+          },
+          "rows": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Number of results to return"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Starting index for pagination"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Deep paging cursor for large result sets"
+          },
+          "select": {
+            "type": "string",
+            "pattern": "^\\w+(,\\w+)*$",
+            "description": "Comma-separated list of fields to select"
+          },
+          "sample": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Return N randomly sampled results"
+          },
+          "mailto": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,6}$",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing works from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_funders",
+      "name": "crossref_funders",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Returns a list of all funders in the Funder Registry.",
+      "module": "tools.academic.crossref.crossref_funders:CrossrefFundersTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/funders",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "General search query string for funder names"
+          },
+          "filter": {
+            "type": "string",
+            "pattern": "location:.*",
+            "description": "Filter by location using Lucene syntax"
+          },
+          "rows": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Number of results to return"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Starting index for pagination"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Deep paging cursor for large result sets"
+          },
+          "mailto": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,6}$",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing funder list from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_get_funder",
+      "name": "crossref_get_funder",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Returns metadata for specified funder and its suborganizations.",
+      "module": "tools.academic.crossref.crossref_get_funder:CrossrefGetFunderTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/funders/{id}",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the funder"
+          },
+          "mailto": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,6}$",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing funder metadata from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_funder_works",
+      "name": "crossref_funder_works",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Returns list of works associated with specified funder.",
+      "module": "tools.academic.crossref.crossref_funder_works:CrossrefFunderWorksTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/funders/{funder_id}/works",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "funder_id"
+        ],
+        "properties": {
+          "funder_id": {
+            "type": "string",
+            "description": "The id of the funder"
+          },
+          "query": {
+            "type": "string",
+            "description": "General search query string"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Comma-separated filter expressions"
+          },
+          "facet": {
+            "type": "string",
+            "description": "Facet fields for aggregation"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sort field"
+          },
+          "order": {
+            "type": "string",
+            "pattern": "(asc|desc)",
+            "description": "Sort order"
+          },
+          "rows": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Number of results to return"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Starting index for pagination"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Deep paging cursor for large result sets"
+          },
+          "select": {
+            "type": "string",
+            "pattern": "^\\w+(,\\w+)*$",
+            "description": "Comma-separated list of fields to select"
+          },
+          "sample": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Return N randomly sampled results"
+          },
+          "mailto": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,6}$",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing works from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_get_prefix",
+      "name": "crossref_get_prefix",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Returns metadata for the DOI owner prefix.",
+      "module": "tools.academic.crossref.crossref_get_prefix:CrossrefGetPrefixTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/prefixes/{prefix}",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "prefix"
+        ],
+        "properties": {
+          "prefix": {
+            "type": "string",
+            "description": "The DOI prefix"
+          },
+          "mailto": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,6}$",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing prefix metadata from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_types",
+      "name": "crossref_types",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Returns a list of valid work types.",
+      "module": "tools.academic.crossref.crossref_types:CrossrefTypesTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/types",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Number of results to return"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Starting index for pagination"
+          },
+          "mailto": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,6}$",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing type list from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_get_type",
+      "name": "crossref_get_type",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Returns information about a metadata work type.",
+      "module": "tools.academic.crossref.crossref_get_type:CrossrefGetTypeTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/types/{id}",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The type identifier"
+          },
+          "mailto": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,6}$",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing type metadata from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_licenses",
+      "name": "crossref_licenses",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Returns a list of licenses.",
+      "module": "tools.academic.crossref.crossref_licenses:CrossrefLicensesTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/licenses",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "General search query string"
+          },
+          "rows": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Number of results to return"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Starting index for pagination"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Deep paging cursor for large result sets"
+          },
+          "mailto": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,6}$",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing license list from Crossref API"
+      }
+    },
+    {
+      "id": "academic.crossref.crossref_work_agency",
+      "name": "crossref_work_agency",
+      "domain": "academic",
+      "version": "1.0.0",
+      "description": "Returns agency information for a DOI.",
+      "module": "tools.academic.crossref.crossref_work_agency:CrossrefWorkAgencyTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "https://api.crossref.org/works/{doi}/agency",
+        "source_urls": [
+          "https://api.crossref.org/swagger-ui/index.html"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "doi"
+        ],
+        "properties": {
+          "doi": {
+            "type": "string",
+            "description": "The DOI identifier"
+          },
+          "mailto": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,6}$",
+            "description": "Email address for polite pool access"
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "string",
+        "description": "Raw JSON string containing agency information from Crossref API"
+      }
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MedAgentBench — DIVE Benchmark</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+
+<section class="section">
+  <div class="container">
+
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to DIVE</a>
+
+    <h1 class="subpage-title" style="margin-top:0.8rem;">MedAgentBench</h1>
+    <div style="margin:0.5rem 0 1rem;">
+      <span class="ood-tag" style="background:var(--primary);font-size:0.75rem;">L3</span>
+      <span style="font-size:0.9rem;color:var(--text-secondary);margin-left:0.3rem;">OOD — Specialized Tools</span>
+      <span class="ood-tag task">Task</span><span class="ood-tag pool">Pool</span><span class="ood-tag set">Set</span><span class="ood-tag proto">Proto</span><span class="ood-tag env">Env</span>
+    </div>
+
+    <p class="subpage-desc">Medical EHR (Electronic Health Record) system interaction via FHIR GET/POST endpoints. A stateful HTTP environment requiring clinical reasoning and proper API sequencing for patient data retrieval and medical decision-making.</p>
+
+    <div class="subpage-meta">
+      <div class="meta-item">
+        <span class="meta-label">Tool Pool</span>
+        <span class="meta-value">FHIR GET / POST / Finish</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Toolset</span>
+        <span class="meta-value">Uniform</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Protocol</span>
+        <span class="meta-value">HTTP (non-OpenAI)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Environment</span>
+        <span class="meta-value">Stateful</span>
+      </div>
+    </div>
+
+    <div class="score-chart">
+      <div class="score-chart-title">Performance (Success Rate %)</div>
+      <div class="bar-row">
+        <span class="bar-label">Qwen3-8B (base)</span>
+        <div class="bar-track"><div class="bar-fill base" style="width:48.6%"></div></div>
+        <span class="bar-val">38.4</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">EnvScaler-8B</span>
+        <div class="bar-track"><div class="bar-fill baseline" style="width:71.6%"></div></div>
+        <span class="bar-val">56.6</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">DIVE-8B (SFT)</span>
+        <div class="bar-track"><div class="bar-fill sft" style="width:63.5%"></div></div>
+        <span class="bar-val">50.2</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">DIVE-8B (RL)</span>
+        <div class="bar-track"><div class="bar-fill rl" style="width:72.5%"></div></div>
+        <span class="bar-val">57.3</span>
+      </div>
+
+      <div style="display:flex;gap:1rem;margin-top:0.8rem;flex-wrap:wrap;">
+        <span style="font-size:0.75rem;display:flex;align-items:center;gap:0.3rem;"><span style="width:12px;height:12px;border-radius:3px;background:#cbd5e1;display:inline-block;"></span> Base</span>
+        <span style="font-size:0.75rem;display:flex;align-items:center;gap:0.3rem;"><span style="width:12px;height:12px;border-radius:3px;background:#94a3b8;display:inline-block;"></span> Best 8B Baseline</span>
+        <span style="font-size:0.75rem;display:flex;align-items:center;gap:0.3rem;"><span style="width:12px;height:12px;border-radius:3px;background:#4cc9f0;display:inline-block;"></span> DIVE (SFT)</span>
+        <span style="font-size:0.75rem;display:flex;align-items:center;gap:0.3rem;"><span style="width:12px;height:12px;border-radius:3px;background:#4361ee;display:inline-block;"></span> DIVE (RL)</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>

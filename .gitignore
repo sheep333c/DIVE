@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Environment
+.env
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project-specific
+backup/
+DIVE/
+output/
+output_*/
+outputs/
+*.log
+
+# Config with real API keys (keep dive.example.yaml)
+dive.yaml
+
+# Test / cache
+.pytest_cache/
+.claude/

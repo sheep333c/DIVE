@@ -1,0 +1,142 @@
+{
+  "search": [
+    {
+      "id": "general.search.search",
+      "name": "search",
+      "domain": "general",
+      "version": "1.0.0",
+      "description": "Web search functionality using various search engines with support for advanced search syntax.",
+      "module": "tools.general.search:GeneralSearchTool",
+      "auth": {
+        "type": "api_key",
+        "env_var": "SERPER_API_KEY"
+      },
+      "meta": {
+        "upstream_api": "https://google.serper.dev/search",
+        "source_urls": [
+          "https://serper.dev/",
+          "https://developers.google.com/custom-search"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search query string. Supports advanced search syntax like site:, inurl:, intitle:, etc."
+          }
+        }
+      }
+    },
+    {
+      "id": "general.search.parallel_search",
+      "name": "parallel_search",
+      "domain": "general",
+      "version": "1.0.0",
+      "description": "Parallel web search functionality for multiple queries simultaneously.",
+      "module": "tools.general.parallel_search:GeneralParallelSearchTool",
+      "auth": {
+        "type": "api_key",
+        "env_var": "SERPER_API_KEY"
+      },
+      "meta": {
+        "upstream_api": "https://google.serper.dev/search",
+        "source_urls": [
+          "https://serper.dev/",
+          "https://developers.google.com/custom-search"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "queries"
+        ],
+        "properties": {
+          "queries": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Array of search query strings to execute in parallel"
+          }
+        }
+      }
+    }
+  ],
+  "browse": [
+    {
+      "id": "general.browse.browse",
+      "name": "browse",
+      "domain": "general",
+      "version": "1.0.0",
+      "description": "Web browsing and content extraction with AI-powered question answering.",
+      "module": "tools.general.browse:GeneralBrowseTool",
+      "auth": {
+        "type": "api_key",
+        "env_var": "JINA_API_KEY"
+      },
+      "meta": {
+        "upstream_api": "https://r.jina.ai/",
+        "source_urls": [
+          "https://jina.ai/"
+        ]
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "url",
+          "query"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the webpage to browse and extract content from"
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Question to answer based on the webpage content"
+          }
+        }
+      }
+    }
+  ],
+  "sandbox": [
+    {
+      "id": "general.sandbox.code_execution",
+      "name": "code_execution",
+      "domain": "general",
+      "version": "1.0.0",
+      "description": "Execute Python code in a Jupyter notebook environment. Variables and imports persist across multiple calls.",
+      "module": "tools.general.code_execution:CodeExecutionTool",
+      "auth": {
+        "type": "none"
+      },
+      "meta": {
+        "upstream_api": "SandboxFusion",
+        "note": "Auto-starts Docker container if SANDBOX_FUSION_URL is not set"
+      },
+      "parameters": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Code to execute in the sandbox environment"
+          }
+        }
+      }
+    }
+  ]
+}

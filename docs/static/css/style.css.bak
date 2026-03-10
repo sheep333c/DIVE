@@ -1,0 +1,883 @@
+/* DIVE Project Page */
+
+/* ===== Variables ===== */
+:root {
+  --primary: #4361ee;
+  --primary-dark: #3a0ca3;
+  --accent: #f72585;
+  --accent2: #4cc9f0;
+  --green: #06d6a0;
+  --bg: #ffffff;
+  --bg-alt: #f8f9fc;
+  --text: #1a1a2e;
+  --text-secondary: #555;
+  --border: #e2e8f0;
+  --shadow: 0 4px 20px rgba(0,0,0,0.06);
+  --shadow-hover: 0 8px 30px rgba(0,0,0,0.10);
+  --radius: 12px;
+}
+
+/* ===== Global ===== */
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text);
+  font-size: 1.15rem;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1100px !important;
+}
+
+/* ===== Hero ===== */
+.hero.is-light {
+  background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 50%, #fff0f6 100%);
+  padding-bottom: 0;
+}
+
+.hero-body {
+  padding: 3rem 1.5rem 2rem;
+}
+
+.publication-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 2.2rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.publication-authors {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+/* ===== Link Buttons ===== */
+.link-block .button {
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin: 0.3rem;
+  padding: 0.6em 1.4em;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.link-block .button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* ===== Abstract + Teaser two-column ===== */
+.abstract-teaser-section {
+  padding: 3rem 0;
+}
+
+.abstract-teaser-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .abstract-teaser-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.abstract-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ===== Section Title ===== */
+.section-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+/* ===== Abstract Text ===== */
+.abstract-text {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--text);
+  text-align: left;
+}
+
+.abstract-text strong {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.abstract-text em {
+  color: var(--accent);
+  font-style: italic;
+}
+
+/* ===== Highlight Cards ===== */
+.highlight-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+}
+
+@media (max-width: 600px) {
+  .highlight-cards { grid-template-columns: 1fr; }
+}
+
+.highlight-card {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.2rem 1rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-top: 3px solid var(--primary);
+}
+
+.highlight-card:nth-child(2) { border-top-color: var(--accent); }
+.highlight-card:nth-child(3) { border-top-color: var(--green); }
+
+.highlight-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+.highlight-card .big-number {
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 0.25rem;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.highlight-card:nth-child(2) .big-number {
+  background: linear-gradient(135deg, var(--accent), #b5179e);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.highlight-card:nth-child(3) .big-number {
+  background: linear-gradient(135deg, var(--green), #118ab2);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.highlight-card .card-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ===== Teaser (right side) ===== */
+.teaser-side {
+  position: sticky;
+  top: 2rem;
+}
+
+.teaser-side img {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin: 0 auto;
+  display: block;
+}
+
+/* ===== Figure ===== */
+.figure-container {
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.figure-container img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.figure-container.figure-medium img {
+  max-width: 95%;
+  margin: 0 auto;
+  display: block;
+}
+
+.figure-caption {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  text-align: left;
+  margin-top: 0.75rem;
+  line-height: 1.6;
+  padding: 0 0.5rem;
+}
+
+/* ===== Section alternating bg ===== */
+.section { padding: 3rem 1.5rem; }
+.section.has-bg { background: var(--bg-alt); }
+
+/* ===== Method Tabs ===== */
+.method-tabs .tabs ul {
+  border-bottom-color: var(--border);
+}
+
+.method-tabs .tabs li.is-active a {
+  border-bottom-color: var(--primary);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.method-tabs .tabs a {
+  font-size: 0.95rem;
+  padding: 0.75em 1.2em;
+  color: var(--text-secondary);
+  border-bottom-width: 3px;
+  transition: color 0.15s;
+}
+
+.tab-content {
+  display: none;
+  padding: 1.5rem 0;
+  animation: fadeIn 0.3s ease;
+}
+
+.tab-content.is-active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Phase cards inside tabs */
+.tab-content .notification {
+  border-radius: var(--radius);
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.tab-content .notification .title.is-6 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ===== Results Table (Booktabs-inspired) ===== */
+.results-table-wrapper {
+  overflow-x: auto;
+  margin: 1rem 0;
+  background: white;
+  border-radius: 4px;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  min-width: 880px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* \toprule — thick top rule */
+.results-table thead {
+  border-top: 2px solid #222;
+}
+
+/* Header cells — clean white background */
+.results-table thead th {
+  background: white;
+  color: #1a1a2e;
+  padding: 0.45rem 0.4rem;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.78rem;
+  vertical-align: bottom;
+  line-height: 1.3;
+  border: none;
+}
+
+.results-table .header-top th:first-child,
+.results-table .header-top th:nth-child(2) {
+  text-align: left;
+  padding-left: 0.6rem;
+}
+
+/* cmidrule(lr){3-3},{4-9},{10-13} — partial rules under group headers only */
+.results-table .header-top .group-hdr {
+  border-bottom: 1px solid #888;
+  padding-bottom: 0.3rem;
+}
+
+/* midrule — full width under second header row */
+.results-table .header-sub th {
+  background: white;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.3rem 0.4rem;
+  border-bottom: 1px solid #222;
+}
+
+/* rowspan header cells also get midrule at their bottom */
+.results-table .header-top th[rowspan] {
+  border-bottom: 1px solid #222;
+}
+
+.results-table .header-sub th a {
+  color: #333;
+  text-decoration: none;
+  border-bottom: 1px dashed #ccc;
+  transition: all 0.15s;
+}
+
+.results-table .header-sub th a:hover {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+/* Body cells */
+.results-table tbody td {
+  padding: 0.38rem 0.35rem;
+  text-align: center;
+  border: none;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+.results-table tbody td:first-child {
+  text-align: left;
+  padding-left: 0.6rem;
+}
+
+/* Model name: adjacent sibling of cat-label in group-first rows;
+   td:first-child in continuation rows (already left via rule above) */
+.results-table tbody .cat-label + td {
+  text-align: left !important;
+  padding-left: 0.5rem;
+}
+
+/* Column tints via <col> — follows paper's LaTeX \columncolor logic */
+col.col-l1     { background: #f7f7f7; }  /* gray!8  */
+col.col-l2g    { background: #f0f4ff; }  /* blue!6  */
+col.col-l2d    { background: #ecfeff; }  /* cyan!8  */
+col.col-l3-fab { background: #fefce8; }  /* yellow!12 */
+col.col-l3-mab { background: #f0fdfa; }  /* teal!9  */
+col.col-l3-swe { background: #f5f3ff; }  /* violet!9 */
+col.col-l3-tool{ background: #fef2f2; }  /* red!6   */
+
+/* Category label */
+.cat-label {
+  font-weight: 800 !important;
+  font-size: 0.88rem !important;
+  color: #333 !important;
+  vertical-align: middle;
+  text-align: left !important;
+  line-height: 1.3 !important;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  padding-right: 0.6rem !important;
+}
+
+.ours-label {
+  color: var(--primary) !important;
+}
+
+/* \midrule between category groups — full width */
+.results-table tbody .cat-sep td {
+  border-top: 1px solid #555;
+}
+
+/* \cmidrule{2-13} inside frontier — all tds in continuation row
+   (col 1 is covered by rowspan, so border naturally skips it) */
+.results-table tbody .frontier-sep td {
+  border-top: 1px solid #aaa;
+}
+
+/* \bottomrule — thick bottom rule (including rowspan cell in last group) */
+.results-table tbody tr:last-child td {
+  border-bottom: 2px solid #222;
+}
+
+.results-table tbody td.ours-label {
+  border-bottom: 2px solid #222;
+}
+
+/* Best markers */
+.best-all {
+  text-decoration: underline;
+}
+
+.best-8b {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Highlight row (DIVE-8B RL) */
+.row-highlight td {
+  font-weight: 600;
+}
+
+.row-highlight td:nth-child(2) {
+  font-weight: 700;
+}
+
+/* Toggle row */
+.toggle-row td {
+  background: #fafbfc !important;
+  padding: 0.3rem 0.6rem !important;
+  border-bottom: none !important;
+}
+
+.frontier-toggle {
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: #888;
+}
+
+.frontier-toggle .toggle-icon {
+  transition: transform 0.2s;
+  font-size: 0.65rem;
+}
+
+.frontier-toggle.is-open .toggle-icon {
+  transform: rotate(90deg);
+}
+
+.table-caption {
+  font-size: 0.88rem;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 0.6rem;
+}
+
+/* ===== Benchmark Taxonomy Table ===== */
+.bench-taxonomy {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.bench-taxonomy thead {
+  border-top: 2px solid #222;
+}
+
+.bench-taxonomy thead th {
+  background: white;
+  color: #222;
+  padding: 0.45rem 0.5rem;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  border-bottom: 1px solid #222;
+}
+
+.bench-taxonomy tbody td {
+  padding: 0.4rem 0.5rem;
+  text-align: left;
+  border: none;
+  line-height: 1.5;
+  vertical-align: top;
+}
+
+.bench-taxonomy tbody .cat-sep td {
+  border-top: 1px solid #555;
+}
+
+.bench-taxonomy tbody .cat-label {
+  text-align: center !important;
+  vertical-align: middle;
+}
+
+.bench-taxonomy tbody tr:last-child td {
+  border-bottom: 2px solid #222;
+}
+
+/* Last group's rowspan cat-label needs bottomrule */
+.bench-taxonomy tbody td.cat-label.last-group {
+  border-bottom: 2px solid #222;
+}
+
+.bench-taxonomy a {
+  color: #333;
+  text-decoration: none;
+  border-bottom: 1px dashed #ccc;
+  transition: all 0.15s;
+}
+
+.bench-taxonomy a:hover {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.bench-taxonomy .ood-tag {
+  font-size: 0.62rem;
+  padding: 0.1rem 0.35rem;
+  margin-right: 0.15rem;
+}
+
+/* ===== Scaling Figure 3-panel ===== */
+.scaling-panel img {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* ===== Comparison Grid ===== */
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.8rem;
+  margin: 1.2rem 0;
+}
+
+.comparison-item {
+  background: white;
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border-left: 3px solid var(--primary);
+}
+
+.comparison-item .metric-name {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.2rem;
+  font-weight: 500;
+}
+
+.comparison-item .metric-values {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.comparison-item .metric-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.comparison-item .metric-delta {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--green);
+}
+
+/* ===== Finding Card ===== */
+.finding-card {
+  background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.finding-card strong { color: var(--primary); }
+
+/* ===== BibTeX ===== */
+.bibtex-section { position: relative; }
+
+.bibtex-box {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  border-radius: var(--radius);
+  padding: 1.2rem 1.5rem;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.bibtex-copy-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #cdd6f4;
+  border-radius: 8px;
+  padding: 0.3rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.bibtex-copy-btn:hover { background: rgba(255,255,255,0.15); }
+
+.bibtex-copy-btn.copied {
+  background: var(--green);
+  color: white;
+  border-color: var(--green);
+}
+
+/* ===== Scroll Reveal ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Footer ===== */
+.footer {
+  padding: 2rem 1.5rem;
+  background: var(--bg-alt);
+}
+
+.footer .content {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* ===== Hero Grid (metrics+benchmarks left, figure right) ===== */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .hero-grid { grid-template-columns: 1fr; }
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-right img {
+  width: 100%;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* ===== Benchmark section title ===== */
+.bench-section-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+/* ===== Bench tier label ===== */
+.bench-tier {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin-top: 0.8rem;
+  margin-bottom: 0.3rem;
+  padding-left: 0.1rem;
+}
+
+/* ===== Bench link row ===== */
+.bench-link {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.8rem;
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 0.3rem;
+  text-decoration: none;
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  transition: all 0.15s;
+  gap: 0.5rem;
+}
+
+.bench-link:hover {
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  transform: translateX(3px);
+  color: var(--primary);
+}
+
+.bench-link-name {
+  flex: 1;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.bench-link-score {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.bench-link-arrow {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  transition: transform 0.15s;
+}
+
+.bench-link:hover .bench-link-arrow {
+  transform: translateX(3px);
+  color: var(--primary);
+}
+
+/* ===== OOD tags (reused on subpages) ===== */
+.ood-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  color: white;
+  margin-right: 0.2rem;
+}
+
+.ood-tag.task { background: #1e50b4; }
+.ood-tag.pool { background: #008064; }
+.ood-tag.set { background: #8c7832; }
+.ood-tag.proto { background: #7850a0; }
+.ood-tag.env { background: #b43264; }
+
+/* ===== Progress bars (reused on subpages) ===== */
+.bar-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 55px;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.bar-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.bar-track {
+  height: 18px;
+  background: #f0f0f0;
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 9px;
+  transition: width 0.6s ease;
+}
+
+.bar-fill.base { background: #cbd5e1; }
+.bar-fill.baseline { background: #94a3b8; }
+.bar-fill.sft { background: var(--accent2); }
+.bar-fill.rl { background: var(--primary); }
+
+.bar-val {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== Subpage layout ===== */
+.subpage-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.back-link {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: color 0.15s;
+}
+
+.back-link:hover { color: var(--primary); }
+
+.subpage-title {
+  font-weight: 800;
+  font-size: 1.8rem;
+}
+
+.subpage-meta {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.meta-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.subpage-desc {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.score-chart {
+  max-width: 500px;
+  margin: 1.5rem 0;
+}
+
+.score-chart-title {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .publication-title { font-size: 1.8rem; }
+  .section { padding: 2rem 1rem; }
+  .hero-grid { grid-template-columns: 1fr; }
+  .highlight-cards { grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+  .highlight-card .big-number { font-size: 1.3rem; }
+  .bar-row { grid-template-columns: 70px 1fr 45px; }
+}

@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "dive"
+version = "0.1.0"
+description = "DIVE: Scaling Diversity in Agentic Task Synthesis for Generalizable Tool Use"
+requires-python = ">=3.10"
+dependencies = [
+    "anthropic>=0.40.0,<1.0",
+    "openai>=1.0,<3.0",
+    "pydantic>=2.0,<3.0",
+    "pyyaml>=6.0,<7.0",
+    "tqdm>=4.60,<5.0",
+    "python-dotenv>=1.0,<2.0",
+    "requests>=2.28,<3.0",
+    "tiktoken>=0.5.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+biological = ["biopython>=1.80"]
+financial = ["tushare>=1.4", "pandas>=2.0"]
+all-tools = [
+    "biopython>=1.80",
+    "tushare>=1.4",
+    "pandas>=2.0",
+    "numpy>=1.24",
+]
+
+[project.scripts]
+dive = "dive.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["dive*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

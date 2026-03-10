@@ -1,0 +1,3 @@
+"""
+Financial domain tests
+"""
