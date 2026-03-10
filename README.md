@@ -36,6 +36,7 @@ You can download our dataset and model from [🤗 HuggingFace](https://huggingfa
 |----------|------|
 | DIVE-SFT-20K | [🤗 dive-team/DIVE-SFT-20K](https://huggingface.co/datasets/dive-team/DIVE-SFT-20K) |
 | DIVE-RL-3K | [🤗 dive-team/DIVE-RL-3K](https://huggingface.co/datasets/dive-team/DIVE-RL-3K) |
+| DIVE-Eval | [🤗 dive-team/DIVE-Eval](https://huggingface.co/datasets/dive-team/DIVE-Eval) |
 | DIVE-8B-RL | [🤗 dive-team/DIVE-8B-RL](https://huggingface.co/dive-team/DIVE-8B-RL) |
 
 ## Installation
