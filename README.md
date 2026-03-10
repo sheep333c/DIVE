@@ -32,6 +32,11 @@ DIVE — an evidence-driven recipe that synthesizes **Di**verse, **V**erifiable,
 
 You can download our dataset and model from [🤗 HuggingFace](https://huggingface.co/dive-team).
 
+| Resource | Link |
+|----------|------|
+| DIVE-SFT-20K | [🤗 dive-team/DIVE-SFT-20K](https://huggingface.co/datasets/dive-team/DIVE-SFT-20K) |
+| DIVE-8B-RL | [🤗 dive-team/DIVE-8B-RL](https://huggingface.co/dive-team/DIVE-8B-RL) |
+
 ## Installation
 
 ```bash
