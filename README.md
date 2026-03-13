@@ -6,7 +6,7 @@
 
 <div align="center">
 
-<a href="#"><img src="https://img.shields.io/badge/Paper-arXiv-b5212f.svg?logo=arxiv" alt="Paper"></a>
+<a href="https://arxiv.org/abs/2603.11076"><img src="https://img.shields.io/badge/Paper-arXiv-b5212f.svg?logo=arxiv" alt="Paper"></a>
 <a href="https://sheep333c.github.io/DIVE/"><img src="https://img.shields.io/badge/Website-DIVE-f37024.svg" alt="Website"></a>
 <a href="https://huggingface.co/dive-team"><img src="https://img.shields.io/badge/Data&Model-HuggingFace-ffd21e.svg?logo=huggingface" alt="HuggingFace"></a>
 
@@ -105,10 +105,13 @@ If you have any problems, please contact [Aili Chen](mailto:xxx@xxx.edu).
 If our paper or related resources prove valuable to your research, we kindly ask for a citation.
 
 ```bibtex
-@inproceedings{chen2026dive,
-  title={{DIVE}: Scaling Diversity in Agentic Task Synthesis for Generalizable Tool Use},
-  author={},
-  booktitle={},
-  year={2026}
+@misc{chen2026divescalingdiversityagentic,
+      title={DIVE: Scaling Diversity in Agentic Task Synthesis for Generalizable Tool Use},
+      author={Aili Chen and Chi Zhang and Junteng Liu and Jiangjie Chen and Chengyu Du and Yunji Li and Ming Zhong and Qin Wang and Zhengmao Zhu and Jiayuan Song and Ke Ji and Junxian He and Pengyu Zhao and Yanghua Xiao},
+      year={2026},
+      eprint={2603.11076},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2603.11076},
 }
 ```
